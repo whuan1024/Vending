@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <declare-styleable name="CameraPreview">
+        <attr name="previewMode" format="enum">
+            <enum name="faceDetect" value="0" />
+            <enum name="waitStillCapture" value="1" />
+        </attr>
+        <attr name="cameraId" format="enum|integer">
+            <enum name="infrared" value="0" />
+            <enum name="normal" value="1" />
+            <enum name="monitor" value="2" />
+        </attr>
+        <attr name="previewCallbackFrequency" format="enum">
+            <!--一秒一次-->
+            <enum name="secondOne" value="1" />
+            <!--一秒两次-->
+            <enum name="secondTwo" value="2" />
+            <!--一秒五次-->
+            <enum name="secondFive" value="5" />
+            <!--一秒十次-->
+            <enum name="secondTen" value="10" />
+        </attr>
+    </declare-styleable>
+</resources>

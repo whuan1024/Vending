@@ -1,3 +1,33 @@
 <resources>
     <string name="app_name">Vending</string>
+    <string name="face_detect">请保持正脸在取景框内</string>
+    <string name="no_face_detected">未能识别到人脸~</string>
+    <string name="exit_detect">退出</string>
+    <string name="try_again">再试一次</string>
+    <string name="remind_opening_service">系统检测到你未开通以下服务</string>
+    <string name="exempt_pwd">开通免密支付</string>
+    <string name="exempt_pwd_summary">用户可先享后付，即拿即走即付款</string>
+    <string name="face_login">开通刷脸服务</string>
+    <string name="face_login_summary">获得更便捷的登录体验</string>
+    <string name="open_now">马上开启</string>
+    <string name="open_service">开通服务</string>
+    <string name="open_success">开启成功</string>
+    <string name="slogan_first">打开手机扫一扫</string>
+    <string name="slogan_second">开启刷脸购物新体验</string>
+    <string name="slogan_single">精致生活新体验</string>
+    <string name="scan_code">扫码购物</string>
+    <string name="open_door">扫码/刷脸开门</string>
+    <string name="purchase">选购商品</string>
+    <string name="auto_settle">关门自动结算</string>
+    <string name="lock_opened">门锁已开</string>
+    <string name="lock_opened_summary">请开门取出货品，关门即可结账</string>
+    <string name="settling_accounts">正在结算</string>
+    <string name="loading">⋅ ⋅ ⋅ loading ⋅ ⋅ ⋅</string>
+    <string name="pay_success">支付成功</string>
+    <string name="total">合计</string>
+    <string name="coupon">优惠劵</string>
+    <string name="actual_payment">已付(共%d件)</string>
+    <string name="order_details_hint">【订单详情】可前往我的-我的订单查看</string>
+    <string name="ok_countdown">好的 (%ds)"</string>
+    <string name="request_camera_permission">This application needs camera permission.</string>
 </resources>
