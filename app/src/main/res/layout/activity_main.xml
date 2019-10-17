@@ -79,11 +79,11 @@
         app:layout_constraintTop_toBottomOf="@+id/detect_face"/>
 
     <Button
-        android:id="@+id/exempt_pwd"
+        android:id="@+id/open_service"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
-        android:text="开通免密"
+        android:text="开通服务"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/scan_code"/>
@@ -96,7 +96,7 @@
         android:text="门锁已开"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/exempt_pwd"/>
+        app:layout_constraintTop_toBottomOf="@+id/open_service"/>
 
     <Button
         android:id="@+id/settle_up"

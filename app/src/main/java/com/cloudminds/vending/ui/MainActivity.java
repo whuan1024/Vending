@@ -41,26 +41,22 @@ public class MainActivity extends AppCompatActivity {
         });
         findViewById(R.id.scan_code).setOnClickListener(v -> {
             Intent intent = new Intent(this, VendingActivity.class);
-            intent.putExtra(IFragSwitcher.TARGET_FRAG, IFragSwitcher.FragDefines.QR_CODE);
-            intent.putExtra(IFragSwitcher.FRAG_NAME, getString(R.string.scan_code));
+            intent.putExtra(IFragSwitcher.TARGET_FRAG, IFragSwitcher.FragDefines.SCAN_CODE);
             startActivity(intent);
         });
-        findViewById(R.id.exempt_pwd).setOnClickListener(v -> {
+        findViewById(R.id.open_service).setOnClickListener(v -> {
             Intent intent = new Intent(this, VendingActivity.class);
-            intent.putExtra(IFragSwitcher.TARGET_FRAG, IFragSwitcher.FragDefines.QR_CODE);
-            intent.putExtra(IFragSwitcher.FRAG_NAME, getString(R.string.open_service));
+            intent.putExtra(IFragSwitcher.TARGET_FRAG, IFragSwitcher.FragDefines.OPEN_SERVICE);
             startActivity(intent);
         });
         findViewById(R.id.lock_opened).setOnClickListener(v -> {
             Intent intent = new Intent(this, VendingActivity.class);
-            intent.putExtra(IFragSwitcher.TARGET_FRAG, IFragSwitcher.FragDefines.SETTLE);
-            intent.putExtra(IFragSwitcher.FRAG_NAME, getString(R.string.lock_opened));
+            intent.putExtra(IFragSwitcher.TARGET_FRAG, IFragSwitcher.FragDefines.LOCK_OPENED);
             startActivity(intent);
         });
         findViewById(R.id.settle_up).setOnClickListener(v -> {
             Intent intent = new Intent(this, VendingActivity.class);
-            intent.putExtra(IFragSwitcher.TARGET_FRAG, IFragSwitcher.FragDefines.SETTLE);
-            intent.putExtra(IFragSwitcher.FRAG_NAME, getString(R.string.settling_accounts));
+            intent.putExtra(IFragSwitcher.TARGET_FRAG, IFragSwitcher.FragDefines.SETTLE_UP);
             startActivity(intent);
         });
         findViewById(R.id.payment_info).setOnClickListener(v -> {

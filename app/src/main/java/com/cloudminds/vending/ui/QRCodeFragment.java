@@ -34,7 +34,7 @@ public class QRCodeFragment extends Fragment {
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         String name = getArguments().getString(IFragSwitcher.FRAG_NAME);
-        boolean isScanCodeFrag = getString(R.string.scan_code).equals(name);
+        boolean isScanCodeFrag = IFragSwitcher.FragDefines.SCAN_CODE.equals(name);
         LogUtil.i("[QRCodeFragment] onViewCreated: frag name: " + name);
 
         view.findViewById(R.id.back).setOnClickListener(v -> getActivity().onBackPressed());

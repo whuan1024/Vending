@@ -14,10 +14,10 @@ import com.cloudminds.vending.utils.LogUtil;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
-public class SettleFragment extends Fragment {
+public class ProcessFragment extends Fragment {
 
-    public static SettleFragment newInstance(String name) {
-        SettleFragment newFragment = new SettleFragment();
+    public static ProcessFragment newInstance(String name) {
+        ProcessFragment newFragment = new ProcessFragment();
         Bundle bundle = new Bundle();
         bundle.putString(IFragSwitcher.FRAG_NAME, name);
         newFragment.setArguments(bundle);
@@ -27,15 +27,15 @@ public class SettleFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.fragment_settle, container, false);
+        return inflater.inflate(R.layout.fragment_process, container, false);
     }
 
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         String name = getArguments().getString(IFragSwitcher.FRAG_NAME);
-        boolean isLockOpenedFrag = getString(R.string.lock_opened).equals(name);
-        LogUtil.i("[SettleFragment] onViewCreated: frag name: " + name);
+        boolean isLockOpenedFrag = IFragSwitcher.FragDefines.LOCK_OPENED.equals(name);
+        LogUtil.i("[ProcessFragment] onViewCreated: frag name: " + name);
 
         view.findViewById(R.id.lock_opened).setVisibility(isLockOpenedFrag ? View.VISIBLE : View.GONE);
         view.findViewById(R.id.loading_anim).setVisibility(isLockOpenedFrag ? View.GONE : View.VISIBLE);

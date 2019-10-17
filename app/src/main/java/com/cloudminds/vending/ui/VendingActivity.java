@@ -14,13 +14,12 @@ import androidx.fragment.app.FragmentTransaction;
 
 public class VendingActivity extends AppCompatActivity implements IFragSwitcher {
 
-    private String mFlagName;
-    private Fragment mCurrentFragment = null;
+    private Fragment mCurrentFragment;
 
-    private FaceDetectFragment faceDetectFragment;
-    private QRCodeFragment qrCodeFragment;
-    private SettleFragment settleFragment;
-    private PaymentInfoFragment paymentInfoFragment;
+    private FaceDetectFragment mFaceDetectFragment;
+    private QRCodeFragment mQRCodeFragment;
+    private ProcessFragment mProcessFragment;
+    private PaymentInfoFragment mPaymentInfoFragment;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -33,7 +32,6 @@ public class VendingActivity extends AppCompatActivity implements IFragSwitcher 
     @Override
     protected void onStart() {
         super.onStart();
-        mFlagName = getIntent().getStringExtra(FRAG_NAME);
         switchFragTo(getIntent().getStringExtra(TARGET_FRAG));
     }
 
@@ -58,28 +56,30 @@ public class VendingActivity extends AppCompatActivity implements IFragSwitcher 
         Fragment targetFragment = null;
         switch (fragName) {
             case FragDefines.FACE_DETECT:
-                if (faceDetectFragment == null) {
-                    faceDetectFragment = new FaceDetectFragment();
+                if (mFaceDetectFragment == null) {
+                    mFaceDetectFragment = new FaceDetectFragment();
                 }
-                targetFragment = faceDetectFragment;
+                targetFragment = mFaceDetectFragment;
+                break;
+            case FragDefines.SCAN_CODE:
+            case FragDefines.OPEN_SERVICE:
+                if (mQRCodeFragment == null) {
+                    mQRCodeFragment = QRCodeFragment.newInstance(fragName);
+                }
+                targetFragment = mQRCodeFragment;
+                break;
+            case FragDefines.LOCK_OPENED:
+            case FragDefines.SETTLE_UP:
+                if (mProcessFragment == null) {
+                    mProcessFragment = ProcessFragment.newInstance(fragName);
+                }
+                targetFragment = mProcessFragment;
                 break;
             case FragDefines.PAYMENT_INFO:
-                if (paymentInfoFragment == null) {
-                    paymentInfoFragment = new PaymentInfoFragment();
+                if (mPaymentInfoFragment == null) {
+                    mPaymentInfoFragment = new PaymentInfoFragment();
                 }
-                targetFragment = paymentInfoFragment;
-                break;
-            case FragDefines.QR_CODE:
-                if (qrCodeFragment == null) {
-                    qrCodeFragment = QRCodeFragment.newInstance(mFlagName);
-                }
-                targetFragment = qrCodeFragment;
-                break;
-            case FragDefines.SETTLE:
-                if (settleFragment == null) {
-                    settleFragment = SettleFragment.newInstance(mFlagName);
-                }
-                targetFragment = settleFragment;
+                targetFragment = mPaymentInfoFragment;
                 break;
             default:
                 break;

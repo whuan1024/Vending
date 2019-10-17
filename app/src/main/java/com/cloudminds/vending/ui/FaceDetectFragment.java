@@ -151,7 +151,7 @@ public class FaceDetectFragment extends Fragment implements FaceDetect.InitCallB
     @Override
     public void onEstablishFace() {
         if (mFragSwitcher != null) {
-            mFragSwitcher.switchFragTo(IFragSwitcher.FragDefines.QR_CODE);
+            mFragSwitcher.switchFragTo(IFragSwitcher.FragDefines.OPEN_SERVICE);
         } else {
             LogUtil.e("[FaceDetectFragment] onEstablishFace: mFragSwitcher is undefined!");
         }
