@@ -1,6 +1,7 @@
 package com.cloudminds.vending.ui;
 
 import android.os.Bundle;
+import android.os.CountDownTimer;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,6 +16,8 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
 public class QRCodeFragment extends Fragment {
+
+    private CountDownTimer mTimer;
 
     public static QRCodeFragment newInstance(String name) {
         QRCodeFragment newFragment = new QRCodeFragment();
@@ -60,5 +63,27 @@ public class QRCodeFragment extends Fragment {
                 R.string.purchase : R.string.face_login);
         ((TextView) view.findViewById(R.id.tv_step3)).setText(isScanCodeFrag ?
                 R.string.auto_settle : R.string.open_success);
+
+        mTimer = new CountDownTimer(1000 * 60, 1000) {
+            @Override
+            public void onTick(long millisUntilFinished) {
+                // TODO: nothing
+            }
+
+            @Override
+            public void onFinish() {
+                LogUtil.i("[QRCodeFragment] onFinish: return in 1 minute");
+                if (getActivity() != null) {
+                    getActivity().onBackPressed();
+                }
+            }
+        };
+        mTimer.start();
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        mTimer.cancel();
     }
 }
