@@ -59,6 +59,20 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="10dp"
             android:text="支付信息"/>
+
+        <Button
+            android:id="@+id/send_face"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:text="发送人脸图片"/>
+
+        <Button
+            android:id="@+id/send_commodity"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:text="发送商品图片"/>
     </LinearLayout>
 
     <LinearLayout
