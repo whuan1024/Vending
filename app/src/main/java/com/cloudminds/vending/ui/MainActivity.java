@@ -7,6 +7,7 @@ import android.content.ServiceConnection;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
+import android.os.Environment;
 import android.os.IBinder;
 import android.os.RemoteException;
 import android.widget.Toast;
@@ -14,14 +15,30 @@ import android.widget.Toast;
 import com.cloudminds.vending.IVendingInterface;
 import com.cloudminds.vending.IVendingListener;
 import com.cloudminds.vending.R;
+import com.cloudminds.vending.net.ApiService;
+import com.cloudminds.vending.net.RetrofitUtil;
+import com.cloudminds.vending.utils.DeviceUnityCodeUtil;
 import com.cloudminds.vending.utils.LogUtil;
+import com.cloudminds.vending.utils.ZipUtil;
+import com.cloudminds.vending.vo.BaseResult;
+import com.cloudminds.vending.vo.MetaInfo;
+import com.cloudminds.vending.vo.NormalInfo;
+import com.google.gson.Gson;
 import com.midea.cabinet.sdk4data.MideaCabinetSDK;
 
 import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
 import androidx.appcompat.app.AppCompatActivity;
+import okhttp3.MediaType;
+import okhttp3.MultipartBody;
+import okhttp3.RequestBody;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -81,6 +98,7 @@ public class MainActivity extends AppCompatActivity {
         initService();
         debugUI();
         debugSDK();
+        debugInteract();
     }
 
     private void debugUI() {
@@ -114,34 +132,6 @@ public class MainActivity extends AppCompatActivity {
             intent.putExtra(IFragSwitcher.TARGET_FRAG, IFragSwitcher.FragDefines.PAYMENT_INFO);
             startActivity(intent);
         });
-        findViewById(R.id.send_face).setOnClickListener(v -> {
-            if (mIsBind) {
-                Bitmap bmp = BitmapFactory.decodeResource(getResources(), R.mipmap.ic_launcher);
-                try {
-                    mIVendingInterface.faceRecognize(bitmap2Byte(bmp));
-                } catch (RemoteException e) {
-                    e.printStackTrace();
-                }
-            } else {
-                Toast.makeText(this, "服务未连接", Toast.LENGTH_SHORT).show();
-            }
-        });
-        findViewById(R.id.send_commodity).setOnClickListener(v -> {
-            if (mIsBind) {
-                List<String> imageList = new ArrayList<>();
-                imageList.add("/sdcard/mideaSDK/imageFile/1.jpg");
-                imageList.add("/sdcard/mideaSDK/imageFile/2.jpg");
-                imageList.add("/sdcard/mideaSDK/imageFile/3.jpg");
-                imageList.add("/sdcard/mideaSDK/imageFile/4.jpg");
-                try {
-                    mIVendingInterface.commodityRecognize(imageList, "这里传eventId", "预留字段");
-                } catch (RemoteException e) {
-                    e.printStackTrace();
-                }
-            } else {
-                Toast.makeText(this, "服务未连接", Toast.LENGTH_SHORT).show();
-            }
-        });
     }
 
     private void debugSDK() {
@@ -165,6 +155,162 @@ public class MainActivity extends AppCompatActivity {
                     MideaCabinetSDK.INSTANCE.startTakePhotos(2);
                 }
             }).start();
+        });
+        findViewById(R.id.start_monitor).setOnClickListener(v -> {
+            new Thread(() -> {
+                if (MideaCabinetSDK.INSTANCE.checkCamera(7)) {
+                    LogUtil.i("[MainActivity] startCapture");
+                    String filePath = Environment.getExternalStorageDirectory().getPath() +
+                            "/mideaSDK/monitorFile/" + System.currentTimeMillis();
+                    MideaCabinetSDK.INSTANCE.startCapture(filePath, 3 * 60 * 1000);
+                }
+            }).start();
+        });
+        findViewById(R.id.stop_monitor).setOnClickListener(v -> {
+            new Thread(() -> {
+                if (MideaCabinetSDK.INSTANCE.checkCamera(7)) {
+                    LogUtil.i("[MainActivity] stopCapture");
+                    MideaCabinetSDK.INSTANCE.stopCapture();
+                }
+            }).start();
+        });
+    }
+
+    private void debugInteract() {
+        findViewById(R.id.send_face).setOnClickListener(v -> {
+            if (mIsBind) {
+                Bitmap bmp = BitmapFactory.decodeResource(getResources(), R.mipmap.ic_launcher);
+                try {
+                    mIVendingInterface.faceRecognize(bitmap2Byte(bmp));
+                } catch (RemoteException e) {
+                    e.printStackTrace();
+                }
+            } else {
+                Toast.makeText(this, "服务未连接", Toast.LENGTH_SHORT).show();
+            }
+        });
+
+        findViewById(R.id.send_commodity).setOnClickListener(v -> {
+            if (mIsBind) {
+                List<String> imageList = new ArrayList<>();
+                for (int i = 1; i < 5; i++) {
+                    imageList.add(Environment.getExternalStorageDirectory().getPath() +
+                            "/mideaSDK/imageFile/" + i + ".jpg");
+                }
+                try {
+                    mIVendingInterface.commodityRecognize(imageList, "这里传eventId", "预留字段");
+                } catch (RemoteException e) {
+                    e.printStackTrace();
+                }
+            } else {
+                Toast.makeText(this, "服务未连接", Toast.LENGTH_SHORT).show();
+            }
+        });
+
+        findViewById(R.id.report_close_door).setOnClickListener(v -> {
+            NormalInfo normalInfo = new NormalInfo();
+            normalInfo.setRcuCode(DeviceUnityCodeUtil.getDeviceUnityCode(this));
+            normalInfo.setEventId("3");
+            normalInfo.setMonitorFile("monitor_file.zip");
+            LogUtil.i("[MainActivity] report_close_door normalInfo: " + normalInfo);
+
+            ApiService apiService = RetrofitUtil.getInstance().create(ApiService.class);
+            apiService.closeDoor(normalInfo).enqueue(new Callback<BaseResult>() {
+                @Override
+                public void onResponse(Call<BaseResult> call, Response<BaseResult> response) {
+                    if (response.code() == 200) {
+                        BaseResult result = response.body();
+                        LogUtil.i("[MainActivity] close door--BaseResult: " + result);
+                        if (result.getCode() == 0) {
+                            LogUtil.i("[MainActivity] close door--success");
+                        } else {
+                            LogUtil.e("[MainActivity] close door--response error, code: " + result.getCode() + ", " + "message: " + result.getMessage());
+                        }
+                    } else {
+                        LogUtil.e("[MainActivity] close door--response code wrong: " + response.code());
+                    }
+                }
+
+                @Override
+                public void onFailure(Call<BaseResult> call, Throwable t) {
+                    LogUtil.e("[MainActivity] close door--onFailure", t);
+                }
+            });
+        });
+
+        findViewById(R.id.report_exception).setOnClickListener(v -> {
+            MetaInfo metaInfo = new MetaInfo();
+            metaInfo.setRcuCode(DeviceUnityCodeUtil.getDeviceUnityCode(this));
+            metaInfo.setEventId("3");
+            LogUtil.i("[MainActivity] report_exception metaInfo: " + metaInfo);
+
+            ApiService apiService = RetrofitUtil.getInstance().create(ApiService.class);
+            apiService.identifyFail(metaInfo).enqueue(new Callback<BaseResult>() {
+                @Override
+                public void onResponse(Call<BaseResult> call, Response<BaseResult> response) {
+                    if (response.code() == 200) {
+                        BaseResult result = response.body();
+                        LogUtil.i("[MainActivity] identify fail--BaseResult: " + result);
+                        if (result.getCode() == 0) {
+                            LogUtil.i("[MainActivity] identify fail--success");
+                        } else {
+                            LogUtil.e("[MainActivity] identify fail--response error, code: " + result.getCode() + ", " + "message: " + result.getMessage());
+                        }
+                    } else {
+                        LogUtil.e("[MainActivity] identify fail--response code wrong: " + response.code());
+                    }
+                }
+
+                @Override
+                public void onFailure(Call<BaseResult> call, Throwable t) {
+                    LogUtil.e("[MainActivity] identify fail--onFailure", t);
+                }
+            });
+        });
+
+        findViewById(R.id.upload_monitor).setOnClickListener(v -> {
+            MetaInfo metaInfo = new MetaInfo();
+            metaInfo.setRcuCode(DeviceUnityCodeUtil.getDeviceUnityCode(this));
+            metaInfo.setEventId("3");
+            LogUtil.i("[MainActivity] upload_monitor metaInfo: " + metaInfo);
+
+            String path = Environment.getExternalStorageDirectory().getPath() + "/mideaSDK/imageFile/1.jpg";
+            File file = new File(path);
+            MultipartBody.Part metaPart = MultipartBody.Part.createFormData("meta", new Gson().toJson(metaInfo));
+            RequestBody requestFile = RequestBody.create(MediaType.parse("multipart/form-data"), file);
+            MultipartBody.Part filePart = MultipartBody.Part.createFormData("file", file.getName(), requestFile);
+
+            ApiService apiService = RetrofitUtil.getInstance().create(ApiService.class);
+            apiService.uploadMonitor(metaPart, filePart).enqueue(new Callback<BaseResult>() {
+                @Override
+                public void onResponse(Call<BaseResult> call, Response<BaseResult> response) {
+                    if (response.code() == 200) {
+                        BaseResult result = response.body();
+                        LogUtil.i("[MainActivity] upload monitor--BaseResult: " + result);
+                        if (result.getCode() == 0) {
+                            LogUtil.i("[MainActivity] upload monitor--success");
+                        } else {
+                            LogUtil.e("[MainActivity] upload monitor--response error, code: " + result.getCode() + ", " + "message: " + result.getMessage());
+                        }
+                    } else {
+                        LogUtil.e("[MainActivity] upload monitor--response code wrong: " + response.code());
+                    }
+                }
+
+                @Override
+                public void onFailure(Call<BaseResult> call, Throwable t) {
+                    LogUtil.e("[MainActivity] upload monitor--onFailure", t);
+                }
+            });
+        });
+
+        findViewById(R.id.zip).setOnClickListener(v -> {
+            try {
+                ZipUtil.zipFile(Environment.getExternalStorageDirectory().getPath() + "/mideaSDK/imageFile",
+                        Environment.getExternalStorageDirectory().getPath() + "/mideaSDK/imageFile.zip");
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         });
     }
 

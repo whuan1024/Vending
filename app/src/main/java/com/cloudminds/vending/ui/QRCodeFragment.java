@@ -9,6 +9,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.cloudminds.vending.R;
+import com.cloudminds.vending.utils.DeviceUnityCodeUtil;
 import com.cloudminds.vending.utils.LogUtil;
 import com.cloudminds.vending.utils.QREncodeUtil;
 
@@ -48,7 +49,7 @@ public class QRCodeFragment extends Fragment {
 
         int size = getResources().getDimensionPixelOffset(R.dimen.qr_code_size);
         ((ImageView) view.findViewById(R.id.img_qr_code)).setImageBitmap(QREncodeUtil.createQRCode(
-                getContext().getPackageName(), size, size, null));
+                "https://idoor.broadvideo.com.cn?rcuCode=" + DeviceUnityCodeUtil.getDeviceUnityCode(getContext()), size, size, null));
 
         ((ImageView) view.findViewById(R.id.img_step1)).setImageResource(isScanCodeFrag ?
                 R.drawable.ic_scan_qrcode : R.drawable.ic_without_pwd);
