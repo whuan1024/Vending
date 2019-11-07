@@ -1,10 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <declare-styleable name="CameraPreview">
-        <attr name="previewMode" format="enum">
-            <enum name="faceDetect" value="0" />
-            <enum name="waitStillCapture" value="1" />
-        </attr>
         <attr name="cameraId" format="enum|integer">
             <enum name="infrared" value="0" />
             <enum name="normal" value="1" />

@@ -11,14 +11,12 @@
         android:id="@+id/camera_preview_infrared"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:visibility="invisible"
         app:cameraId="infrared"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:previewCallbackFrequency="secondTwo"
-        app:previewMode="faceDetect"/>
+        app:previewCallbackFrequency="secondTwo"/>
 
     <com.cloudminds.vending.view.CameraPreview
         android:id="@+id/camera_preview_normal"
@@ -29,8 +27,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:previewCallbackFrequency="secondTwo"
-        app:previewMode="faceDetect"/>
+        app:previewCallbackFrequency="secondTwo"/>
 
     <ImageView
         android:layout_width="wrap_content"

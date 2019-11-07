@@ -5,11 +5,9 @@ import android.content.Context;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.graphics.Rect;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
-import android.text.TextUtils;
 import android.util.Size;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -20,6 +18,7 @@ import com.cloudminds.vending.R;
 import com.cloudminds.vending.utils.FileUtil;
 import com.cloudminds.vending.utils.LogUtil;
 import com.cloudminds.vending.view.CameraPreview;
+import com.cloudminds.vending.view.IPreviewCallback;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -27,9 +26,8 @@ import androidx.fragment.app.Fragment;
 
 public class FaceDetectFragment extends Fragment implements FaceDetect.InitCallBack, Handler.Callback,
         EmptyFaceDialog.IEmptyFaceDialogCallback, StrangerFaceDialog.IStrangerFaceDialogCallback,
-        CameraPreview.IPreviewCallback {
+        IPreviewCallback {
 
-    private static final int FACE_DETECT_DELAY = 5 * 1000;
     private static final int REQUEST_CAMERA_PERMISSION = 1;
     private static final String FRAGMENT_DIALOG = "dialog";
     private static final int MSG_FACE_DETECT_FAIL = 0;
@@ -49,14 +47,14 @@ public class FaceDetectFragment extends Fragment implements FaceDetect.InitCallB
 
     private Handler mHandler = new Handler(this);
 
-    private class FaceDetectPictures {
+    private class FaceDetectImage {
         private byte[] coloredFace;
         private Size coloredSize;
         private byte[] infraredFace;
         private Size infraredSize;
     }
 
-    private FaceDetectPictures mDetectedPictures = new FaceDetectPictures();
+    private FaceDetectImage mDetectedImage = new FaceDetectImage();
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -72,13 +70,6 @@ public class FaceDetectFragment extends Fragment implements FaceDetect.InitCallB
         mInfraredPreview.setPreviewCallback(this);
 
         view.findViewById(R.id.close).setOnClickListener(v -> getActivity().onBackPressed());
-
-        view.findViewById(R.id.close).setOnLongClickListener(v -> {
-            LogUtil.i("[FaceDetectFragment] capture picture");
-            mNormalPreview.capturePicture();
-            mInfraredPreview.capturePicture();
-            return true;
-        });
 
         FaceDetect.init(getContext().getApplicationContext(), this);
         mFaceDetect = new FaceDetect();
@@ -171,66 +162,49 @@ public class FaceDetectFragment extends Fragment implements FaceDetect.InitCallB
     }
 
     @Override
-    public void onFacePreview(String cameraId, Size previewSize, @NonNull byte[] picBytes) {
-        LogUtil.i("[FaceDetectFragment] onFacePreview: CameraId = " + cameraId + ", previewSize = " + previewSize + ", picBytes length = " + picBytes.length);
+    public void onFacePreview(int cameraId, Size previewSize, @NonNull byte[] picBytes) {
+        LogUtil.i("[FaceDetectFragment] onFacePreview: CameraId = " + cameraId + ", previewSize = "
+                + previewSize + ", picBytes length = " + picBytes.length);
 
-        if (mDetectInitSuccess && mFaceDetect.faceValidate(picBytes, previewSize.getWidth(),
-                previewSize.getHeight(), 0)) {
-
-            if (TextUtils.equals(cameraId, "0")) {
-                if (mDetectedPictures.coloredFace != null && mDetectedPictures.infraredFace != null) {
-                    mDetectedPictures = new FaceDetectPictures();
+        if (mDetectInitSuccess) {
+            if (cameraId == 0) {
+                if (mDetectedImage.coloredFace != null && mDetectedImage.infraredFace != null) {
+                    mDetectedImage = new FaceDetectImage();
                 }
-                mDetectedPictures.coloredFace = picBytes;
-                mDetectedPictures.coloredSize = previewSize;
-            } else if (TextUtils.equals(cameraId, "1")) {
-                if (mDetectedPictures.coloredFace != null && mDetectedPictures.infraredFace != null) {
-                    mDetectedPictures = new FaceDetectPictures();
+                mDetectedImage.infraredFace = picBytes;
+                mDetectedImage.infraredSize = previewSize;
+            } else if (cameraId == 1) {
+                if (mDetectedImage.coloredFace != null && mDetectedImage.infraredFace != null) {
+                    mDetectedImage = new FaceDetectImage();
                 }
-                mDetectedPictures.infraredFace = picBytes;
-                mDetectedPictures.infraredSize = previewSize;
+                mDetectedImage.coloredFace = picBytes;
+                mDetectedImage.coloredSize = previewSize;
             }
 
-            if (mDetectedPictures.coloredFace != null && mDetectedPictures.infraredFace != null) {
-                FaceDetect.Result result = mFaceDetect.getFaceJPEG(mDetectedPictures.coloredFace,
-                        mDetectedPictures.coloredSize.getWidth(), mDetectedPictures.coloredSize.getHeight(),
-                        mDetectedPictures.infraredFace, mDetectedPictures.infraredSize.getWidth(),
-                        mDetectedPictures.infraredSize.getHeight(), 90);
+            if (mDetectedImage.coloredFace != null && mDetectedImage.infraredFace != null) {
+                FaceDetect.Result result = mFaceDetect.getFaceJPEG(
+                        mDetectedImage.coloredFace,
+                        mDetectedImage.coloredSize.getWidth(),
+                        mDetectedImage.coloredSize.getHeight(),
+                        mDetectedImage.infraredFace,
+                        mDetectedImage.infraredSize.getWidth(),
+                        mDetectedImage.infraredSize.getHeight(), 90);
                 if (result != null) {
-                    Rect faceRect = result.faceRect;
-                    LogUtil.i("[FaceDetectFragment] onFacePreview: faceRect: " + faceRect);
-                    //RobotReport.getInstance().sendFaceImage(1, new int[]{0}, result.faceJpeg);
+                    LogUtil.d("[FaceDetectFragment] onFacePreview: detect done!");
+                    Bitmap bitmap = BitmapFactory.decodeByteArray(result.faceJpeg, 0, result.faceJpeg.length);
+                    String photoName = FileUtil.getPhotoPath(getContext(), "face");
+                    FileUtil.saveBitmap(photoName, bitmap);
                 }
             }
-//            FaceDetect.FaceResult faceResult = mFaceDetect.faceDetect(picBytes, previewSize.getWidth(),
-//                    previewSize.getHeight(), 0);
-//            if (faceResult != null) {
-//                final Rect rect = faceResult.faceRect;
-//                Log.d(TAG, "检测出人脸，置信度为: " + faceResult.score);
-//                Log.w(TAG, "run: 抠图：" + rect);
-//            }
         }
-//        Bitmap bitmap = BitmapFactory.decodeByteArray(picBytes, 0, picBytes.length);
-//        String photoName = FileUtil.getPhotoPath(getContext(), "Preview");
-//        FileUtil.saveBitmap(photoName, bitmap);
     }
 
     @Override
-    public void onCameraPermissionDenied() {
-        requestCameraPermission();
-    }
-
-    @Override
-    public void onPictureCaptured(String cameraId, byte[] picBytes) {
-        LogUtil.i("[FaceDetectFragment] onPictureCaptured: CameraId = " + cameraId + ", picBytes length = " + picBytes.length);
-        Bitmap bitmap = BitmapFactory.decodeByteArray(picBytes, 0, picBytes.length);
-//        //旋转90度
-//        Matrix m = new Matrix();
-//        m.setRotate(90, (float) bitmap.getWidth() / 2, (float) bitmap.getHeight() / 2);
-//        bitmap = Bitmap.createBitmap(bitmap, 0, 0, bitmap.getWidth(), bitmap.getHeight(), m, true);
-
-        String photoName = FileUtil.getPhotoPath(getContext(), TextUtils.equals(cameraId, "0") ? "Normal" : "Infrared");
-        FileUtil.saveBitmap(photoName, bitmap);
+    public void onCameraPermissionDenied(int cameraId) {
+        if (cameraId == 0) {
+            //此处加入摄像头Id判断，是为了对于双摄的情况确保弹框只弹一次
+            requestCameraPermission();
+        }
     }
 
     private void requestCameraPermission() {
