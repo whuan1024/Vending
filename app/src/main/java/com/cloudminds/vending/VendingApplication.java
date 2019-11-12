@@ -2,6 +2,7 @@ package com.cloudminds.vending;
 
 import android.app.Application;
 
+import com.cloudminds.vending.client.VendingClient;
 import com.cloudminds.vending.utils.LogUtil;
 import com.midea.cabinet.sdk4data.MideaCabinetSDK;
 import com.midea.cabinet.sdk4data.bean.CabinetGridDataBean;
@@ -12,17 +13,21 @@ import org.jetbrains.annotations.NotNull;
 
 public class VendingApplication extends Application {
 
+    private VendingClient mClient;
+
     @Override
     public void onCreate() {
         super.onCreate();
         LogUtil.setEnabled(true);
         LogUtil.i("[VendingApplication] OnCreate");
+        mClient = VendingClient.getInstance(getApplicationContext());
         MideaCabinetSDK.INSTANCE.init(this, new ConfigBean("1","1","316DTW","vision"));
         MideaCabinetSDK.INSTANCE.setCabinetSDKListener(new MideaCabinetSDK.SDKListener() {
             @Override
             public void onOpenSuccess() {
                 //开门成功
                 LogUtil.i("[MideaCabinetSDK] onOpenSuccess");
+                mClient.reportStatus("door_state", 1);
             }
 
             @Override
@@ -35,6 +40,7 @@ public class VendingApplication extends Application {
             public void onCloseSuccess() {
                 //关门成功
                 LogUtil.i("[MideaCabinetSDK] onCloseSuccess");
+                mClient.reportStatus("door_state", 0);
             }
 
             @Override
@@ -53,6 +59,7 @@ public class VendingApplication extends Application {
             public void onError(@NotNull ErrorMsgBean errorMsgBean) {
                 //异常监听
                 LogUtil.e("[MideaCabinetSDK] onError: errorMsgBean: " + errorMsgBean);
+                mClient.reportError(errorMsgBean.getCode(), errorMsgBean.getMsg(), errorMsgBean.getExtra());
             }
         });
     }

@@ -1,20 +1,14 @@
 package com.cloudminds.vending.ui;
 
-import android.content.ComponentName;
-import android.content.Context;
 import android.content.Intent;
-import android.content.ServiceConnection;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.os.Environment;
-import android.os.IBinder;
-import android.os.RemoteException;
 import android.widget.Toast;
 
-import com.cloudminds.vending.IVendingInterface;
-import com.cloudminds.vending.IVendingListener;
 import com.cloudminds.vending.R;
+import com.cloudminds.vending.client.VendingClient;
 import com.cloudminds.vending.net.ApiService;
 import com.cloudminds.vending.net.RetrofitUtil;
 import com.cloudminds.vending.utils.DeviceUnityCodeUtil;
@@ -42,60 +36,10 @@ import retrofit2.Response;
 
 public class MainActivity extends AppCompatActivity {
 
-    private boolean mIsBind = false;
-
-    private IVendingInterface mIVendingInterface;
-
-    private ServiceConnection mConnection = new ServiceConnection() {
-        @Override
-        public void onServiceConnected(ComponentName componentName, IBinder iBinder) {
-            LogUtil.d("[MainActivity] onServiceConnected");
-            mIVendingInterface = IVendingInterface.Stub.asInterface(iBinder);
-            try {
-                mIVendingInterface.registerCallback(mIVendingListener);
-            } catch (RemoteException e) {
-                e.printStackTrace();
-            }
-            mIsBind = true;
-        }
-
-        @Override
-        public void onServiceDisconnected(ComponentName componentName) {
-            LogUtil.d("[MainActivity] onServiceDisconnected");
-            try {
-                mIVendingInterface.unregisterCallback(mIVendingListener);
-            } catch (RemoteException e) {
-                e.printStackTrace();
-            }
-            mIVendingInterface = null;
-            mIsBind = false;
-        }
-    };
-
-    private IVendingListener mIVendingListener = new IVendingListener.Stub() {
-        @Override
-        public void onFaceRecognize(String result) throws RemoteException {
-            LogUtil.d("[MainActivity] onFaceRecognize: result: " + result);
-        }
-
-        @Override
-        public void onCommodityRecognize(String result) throws RemoteException {
-            LogUtil.d("[MainActivity] onCommodityRecognize: result: " + result);
-        }
-    };
-
-    private void initService() {
-        Intent i = new Intent();
-        i.setComponent(new ComponentName("com.tommy.virtualrobotdemo",
-                "com.tommy.virtualrobotdemo.VendingService"));
-        bindService(i, mConnection, Context.BIND_AUTO_CREATE);
-    }
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        initService();
         debugUI();
         debugSDK();
         debugInteract();
@@ -178,33 +122,17 @@ public class MainActivity extends AppCompatActivity {
 
     private void debugInteract() {
         findViewById(R.id.send_face).setOnClickListener(v -> {
-            if (mIsBind) {
-                Bitmap bmp = BitmapFactory.decodeResource(getResources(), R.mipmap.ic_launcher);
-                try {
-                    mIVendingInterface.faceRecognize(bitmap2Byte(bmp));
-                } catch (RemoteException e) {
-                    e.printStackTrace();
-                }
-            } else {
-                Toast.makeText(this, "服务未连接", Toast.LENGTH_SHORT).show();
-            }
+            Bitmap bmp = BitmapFactory.decodeResource(getResources(), R.mipmap.ic_launcher);
+            VendingClient.getInstance(this).faceRecognize(bitmap2Byte(bmp));
         });
 
         findViewById(R.id.send_commodity).setOnClickListener(v -> {
-            if (mIsBind) {
-                List<String> imageList = new ArrayList<>();
-                for (int i = 1; i < 5; i++) {
-                    imageList.add(Environment.getExternalStorageDirectory().getPath() +
-                            "/mideaSDK/imageFile/" + i + ".jpg");
-                }
-                try {
-                    mIVendingInterface.commodityRecognize(imageList, "这里传eventId", "预留字段");
-                } catch (RemoteException e) {
-                    e.printStackTrace();
-                }
-            } else {
-                Toast.makeText(this, "服务未连接", Toast.LENGTH_SHORT).show();
+            List<String> imageList = new ArrayList<>();
+            for (int i = 1; i < 5; i++) {
+                imageList.add(Environment.getExternalStorageDirectory().getPath() +
+                        "/mideaSDK/imageFile/" + i + ".jpg");
             }
+            VendingClient.getInstance(this).commodityRecognize(imageList, "这里传eventId", "预留字段");
         });
 
         findViewById(R.id.report_close_door).setOnClickListener(v -> {
@@ -318,11 +246,5 @@ public class MainActivity extends AppCompatActivity {
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         bm.compress(Bitmap.CompressFormat.PNG, 100, baos);
         return baos.toByteArray();
-    }
-
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        unbindService(mConnection);
     }
 }
