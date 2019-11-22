@@ -68,18 +68,22 @@ public class CameraPreview extends TextureView {
                 return;
             }
 
-            mCamera = Camera.open(mCameraId);
-            initCamera();
-            startPreview(surface);
+            try {
+                mCamera = Camera.open(mCameraId);
+                initCamera();
+                startPreview(surface);
 
-            mCamera.setPreviewCallback((data, camera) -> {
-                if (mLastPreviewTime + mCallbackInterval <= System.currentTimeMillis()) {
-                    mPreviewCallback.onFacePreview(mCameraId,
-                            new Size(mCamera.getParameters().getPreviewSize().width,
-                                    mCamera.getParameters().getPreviewSize().height), data);
-                    mLastPreviewTime = System.currentTimeMillis();
-                }
-            });
+                mCamera.setPreviewCallback((data, camera) -> {
+                    if (mLastPreviewTime + mCallbackInterval <= System.currentTimeMillis()) {
+                        mPreviewCallback.onFacePreview(mCameraId,
+                                new Size(mCamera.getParameters().getPreviewSize().width,
+                                        mCamera.getParameters().getPreviewSize().height), data);
+                        mLastPreviewTime = System.currentTimeMillis();
+                    }
+                });
+            } catch (Exception e) {
+                LogUtil.e("[CameraPreview] Failed to start preview", e);
+            }
         }
 
         @Override

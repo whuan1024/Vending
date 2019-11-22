@@ -1,6 +1,5 @@
 package com.cloudminds.vending.ui;
 
-import android.annotation.SuppressLint;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.view.LayoutInflater;
@@ -17,6 +16,9 @@ import androidx.fragment.app.Fragment;
 
 public class PaymentInfoFragment extends Fragment {
 
+    static final String TOTAL_AMOUNT = "total_amount";
+    static final String TOTAL_NUMBER = "total_number";
+
     private Button mButton;
     private CountDownTimer mTimer;
 
@@ -29,15 +31,17 @@ public class PaymentInfoFragment extends Fragment {
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        view.findViewById(R.id.back).setOnClickListener(v -> getActivity().onBackPressed());
-        ((TextView) view.findViewById(R.id.payment_bill)).setText(String.format(getString(R.string.actual_payment), 3));
+        String amount = String.format("¥%.2f", getArguments().getInt(TOTAL_AMOUNT) / 100.0);
+        int number = getArguments().getInt(TOTAL_NUMBER);
+        view.findViewById(R.id.coupon_info).setVisibility(View.INVISIBLE);
+        ((TextView) view.findViewById(R.id.payment_bill)).setText(String.format(getString(R.string.actual_payment), number));
+        ((TextView) view.findViewById(R.id.total_cost)).setText(amount);
+        ((TextView) view.findViewById(R.id.total_amount)).setText(amount);
         mButton = view.findViewById(R.id.btn_ok);
-        mButton.setOnClickListener(v -> getActivity().onBackPressed());
+        mButton.setOnClickListener(v -> getActivity().finish());
         mTimer = new CountDownTimer(1000 * 11, 1000) {
-            @SuppressLint("DefaultLocale")
             @Override
             public void onTick(long millisUntilFinished) {
-                LogUtil.i("[PaymentInfoFragment] onTick: millisUntilFinished: " + millisUntilFinished);
                 if (isAdded()) {
                     mButton.setText(String.format(getString(R.string.ok_countdown),
                             millisUntilFinished / 1000));
@@ -46,9 +50,9 @@ public class PaymentInfoFragment extends Fragment {
 
             @Override
             public void onFinish() {
-                LogUtil.i("[PaymentInfoFragment] onFinish");
+                LogUtil.i("[PaymentInfoFragment] onFinish: return in 10 seconds");
                 if (getActivity() != null) {
-                    getActivity().onBackPressed();
+                    getActivity().finish();
                 }
             }
         };

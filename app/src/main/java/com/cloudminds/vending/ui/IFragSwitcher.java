@@ -17,6 +17,9 @@ import static com.cloudminds.vending.ui.IFragSwitcher.FragDefines.SETTLE_UP;
 
 public interface IFragSwitcher extends Serializable {
 
+    int MSG_SWITCH_FRAG = 101;
+    int MSG_FINISH_ACTV = 102;
+
     String TARGET_FRAG = "target_frag";
     String FRAG_NAME = "frag_name";
 

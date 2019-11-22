@@ -49,7 +49,7 @@ public class QRCodeFragment extends Fragment {
 
         int size = getResources().getDimensionPixelOffset(R.dimen.qr_code_size);
         ((ImageView) view.findViewById(R.id.img_qr_code)).setImageBitmap(QREncodeUtil.createQRCode(
-                "https://idoor.broadvideo.com.cn?rcuCode=" + DeviceUnityCodeUtil.getDeviceUnityCode(getContext()), size, size, null));
+                "https://sit137.cloudminds.com?rcuCode=" + DeviceUnityCodeUtil.getDeviceUnityCode(getContext()), size, size, null));
 
         ((ImageView) view.findViewById(R.id.img_step1)).setImageResource(isScanCodeFrag ?
                 R.drawable.ic_scan_qrcode : R.drawable.ic_without_pwd);
@@ -73,8 +73,8 @@ public class QRCodeFragment extends Fragment {
 
             @Override
             public void onFinish() {
-                LogUtil.i("[QRCodeFragment] onFinish: return in 1 minute");
-                if (getActivity() != null) {
+                if (getActivity() != null && isVisible()) {
+                    LogUtil.i("[QRCodeFragment] onFinish: return in 1 minute");
                     getActivity().onBackPressed();
                 }
             }

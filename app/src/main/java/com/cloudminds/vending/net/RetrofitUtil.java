@@ -11,7 +11,7 @@ import retrofit2.converter.gson.GsonConverterFactory;
 
 public class RetrofitUtil {
 
-    private static final String BASE_URL = "http://cves.harix.iamidata.com:31719/crss/cves/v1/vending/";
+    private static final String BASE_URL = "https://sit137.cloudminds.com/crss-mobile/cves/v1/vending/";
     private static final int TIMEOUT = 10;
 
     private static volatile RetrofitUtil mInstance;

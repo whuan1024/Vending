@@ -15,6 +15,7 @@ import android.view.ViewGroup;
 
 import com.cloudminds.facedetect.FaceDetect;
 import com.cloudminds.vending.R;
+import com.cloudminds.vending.client.VendingClient;
 import com.cloudminds.vending.utils.FileUtil;
 import com.cloudminds.vending.utils.LogUtil;
 import com.cloudminds.vending.view.CameraPreview;
@@ -191,6 +192,7 @@ public class FaceDetectFragment extends Fragment implements FaceDetect.InitCallB
                         mDetectedImage.infraredSize.getHeight(), 90);
                 if (result != null) {
                     LogUtil.d("[FaceDetectFragment] onFacePreview: detect done!");
+                    VendingClient.getInstance(getContext()).faceRecognize(result.faceJpeg);
                     Bitmap bitmap = BitmapFactory.decodeByteArray(result.faceJpeg, 0, result.faceJpeg.length);
                     String photoName = FileUtil.getPhotoPath(getContext(), "face");
                     FileUtil.saveBitmap(photoName, bitmap);

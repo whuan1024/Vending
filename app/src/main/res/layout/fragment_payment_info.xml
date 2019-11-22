@@ -8,16 +8,6 @@
     android:background="@drawable/bg_blue"
     tools:context="com.cloudminds.vending.ui.PaymentInfoFragment">
 
-    <ImageView
-        android:id="@+id/back"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="69dp"
-        android:layout_marginTop="61dp"
-        android:src="@drawable/ic_back"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"/>
-
     <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -63,15 +53,16 @@
                 android:textSize="40sp"/>
 
             <TextView
+                android:id="@+id/total_amount"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentEnd="true"
-                android:text="¥10.69"
                 android:textColor="@color/main_text_color"
                 android:textSize="40sp"/>
         </RelativeLayout>
 
         <RelativeLayout
+            android:id="@+id/coupon_info"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="40dp"
@@ -118,10 +109,10 @@
                 android:textSize="60sp"/>
 
             <TextView
+                android:id="@+id/total_cost"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentEnd="true"
-                android:text="¥8.19"
                 android:textColor="@color/main_text_color"
                 android:textSize="60sp"/>
         </RelativeLayout>

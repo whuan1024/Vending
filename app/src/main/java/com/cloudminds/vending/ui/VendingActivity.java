@@ -1,10 +1,13 @@
 package com.cloudminds.vending.ui;
 
 import android.os.Bundle;
+import android.os.Handler;
 import android.view.Window;
 import android.view.WindowManager;
 
 import com.cloudminds.vending.R;
+import com.cloudminds.vending.client.VendingClient;
+import com.cloudminds.vending.controller.DoorController;
 import com.cloudminds.vending.utils.LogUtil;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -21,12 +24,30 @@ public class VendingActivity extends AppCompatActivity implements IFragSwitcher 
     private ProcessFragment mProcessFragment;
     private PaymentInfoFragment mPaymentInfoFragment;
 
+    private Bundle mBundle = new Bundle();
+
+    private final Handler mSwitchFragHandler = new Handler(msg -> {
+        if (msg.what == IFragSwitcher.MSG_SWITCH_FRAG) {
+            String fragName = (String) msg.obj;
+            if (FragDefines.PAYMENT_INFO.equals(fragName)) {
+                mBundle.putInt(PaymentInfoFragment.TOTAL_AMOUNT, msg.arg1);
+                mBundle.putInt(PaymentInfoFragment.TOTAL_NUMBER, msg.arg2);
+            }
+            switchFragTo(fragName);
+        } else if (msg.what == IFragSwitcher.MSG_FINISH_ACTV) {
+            finish();
+        }
+        return true;
+    });
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
         setContentView(R.layout.activity_vending);
+        VendingClient.getInstance(this).setHandler(mSwitchFragHandler);
+        DoorController.getInstance(this).setHandler(mSwitchFragHandler);
     }
 
     @Override
@@ -52,6 +73,7 @@ public class VendingActivity extends AppCompatActivity implements IFragSwitcher 
     @Override
     public void switchFragTo(@FragDefines String fragName) {
         LogUtil.i("[VendingActivity] switchFragTo: " + fragName);
+        if (fragName == null) return;
 
         Fragment targetFragment = null;
         switch (fragName) {
@@ -63,14 +85,16 @@ public class VendingActivity extends AppCompatActivity implements IFragSwitcher 
                 break;
             case FragDefines.SCAN_CODE:
             case FragDefines.OPEN_SERVICE:
-                if (mQRCodeFragment == null) {
+                if (mQRCodeFragment == null || !fragName.equals(
+                        mQRCodeFragment.getArguments().getString(IFragSwitcher.FRAG_NAME))) {
                     mQRCodeFragment = QRCodeFragment.newInstance(fragName);
                 }
                 targetFragment = mQRCodeFragment;
                 break;
             case FragDefines.LOCK_OPENED:
             case FragDefines.SETTLE_UP:
-                if (mProcessFragment == null) {
+                if (mProcessFragment == null || !fragName.equals(
+                        mProcessFragment.getArguments().getString(IFragSwitcher.FRAG_NAME))) {
                     mProcessFragment = ProcessFragment.newInstance(fragName);
                 }
                 targetFragment = mProcessFragment;
@@ -79,6 +103,7 @@ public class VendingActivity extends AppCompatActivity implements IFragSwitcher 
                 if (mPaymentInfoFragment == null) {
                     mPaymentInfoFragment = new PaymentInfoFragment();
                 }
+                mPaymentInfoFragment.setArguments(mBundle);
                 targetFragment = mPaymentInfoFragment;
                 break;
             default:
@@ -92,17 +117,17 @@ public class VendingActivity extends AppCompatActivity implements IFragSwitcher 
 
         FragmentManager fragmentManager = getSupportFragmentManager();
         FragmentTransaction transaction = fragmentManager.beginTransaction();
-        if (!targetFragment.isAdded() && !targetFragment.isDetached()) {
+        if (!targetFragment.isAdded()) {
             if (mCurrentFragment != null) {
                 transaction.hide(mCurrentFragment);
             }
-            transaction.replace(R.id.vending_container, targetFragment, fragName)
-                    .addToBackStack(fragName);//压栈
+            transaction.add(R.id.vending_container, targetFragment, fragName)
+                    .addToBackStack(fragName);//压栈，如果不压栈的话，多个fragment跳转之后，按返回键不会退回到上一个fragment，而是直接退出activity了
         } else {
             transaction.hide(mCurrentFragment).show(targetFragment);
         }
         mCurrentFragment = targetFragment;
-        transaction.commit();
+        transaction.commitAllowingStateLoss();
         LogUtil.i("[VendingActivity] fragments before switch: " + fragmentManager.getFragments());
     }
 }

@@ -107,6 +107,8 @@ public class MainActivity extends AppCompatActivity {
                     String filePath = Environment.getExternalStorageDirectory().getPath() +
                             "/mideaSDK/monitorFile/" + System.currentTimeMillis();
                     MideaCabinetSDK.INSTANCE.startCapture(filePath, 3 * 60 * 1000);
+                } else {
+                    LogUtil.e("[MainActivity] startMonitor: Monitor camera not found!");
                 }
             }).start();
         });
@@ -115,6 +117,8 @@ public class MainActivity extends AppCompatActivity {
                 if (MideaCabinetSDK.INSTANCE.checkCamera(7)) {
                     LogUtil.i("[MainActivity] stopCapture");
                     MideaCabinetSDK.INSTANCE.stopCapture();
+                } else {
+                    LogUtil.e("[MainActivity] stopMonitor: Monitor camera not found!");
                 }
             }).start();
         });

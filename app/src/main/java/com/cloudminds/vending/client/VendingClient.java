@@ -4,17 +4,26 @@ import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.ServiceConnection;
+import android.os.Handler;
 import android.os.IBinder;
 import android.os.RemoteException;
 
 import com.cloudminds.vending.IVendingInterface;
 import com.cloudminds.vending.IVendingListener;
+import com.cloudminds.vending.controller.DoorController;
+import com.cloudminds.vending.ui.IFragSwitcher;
 import com.cloudminds.vending.utils.LogUtil;
+import com.midea.cabinet.sdk4data.MideaCabinetSDK;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.util.List;
 
 public class VendingClient {
 
+    private Context mContext;
+    private Handler mHandler;
     private boolean mIsBind = false;
     private IVendingInterface mIVendingInterface;
     private static volatile VendingClient mInstance;
@@ -31,7 +40,12 @@ public class VendingClient {
     }
 
     private VendingClient(Context context) {
+        mContext = context;
         bindService(context);
+    }
+
+    public void setHandler(Handler handler) {
+        mHandler = handler;
     }
 
     private void bindService(Context context) {
@@ -81,6 +95,29 @@ public class VendingClient {
         @Override
         public void onReceiveMessage(String msg) throws RemoteException {
             LogUtil.d("[VendingClient] onReceiveMessage: msg: " + msg);
+            try {
+                JSONObject msgJson = new JSONObject(msg);
+                if (msgJson.has("action") && msgJson.has("param")) {
+                    JSONObject paramJson = new JSONObject(msgJson.getString("param"));
+                    if ("openVending".equals(msgJson.getString("action"))) {
+                        if (paramJson.getInt("canOpenFlag") == 1) {
+                            DoorController.getInstance(mContext).setEventId(paramJson.getString("eventId"));
+                            MideaCabinetSDK.INSTANCE.openLock(true);
+                            mHandler.obtainMessage(IFragSwitcher.MSG_SWITCH_FRAG,
+                                    IFragSwitcher.FragDefines.LOCK_OPENED).sendToTarget();
+                        } else {
+                            mHandler.obtainMessage(IFragSwitcher.MSG_SWITCH_FRAG,
+                                    IFragSwitcher.FragDefines.OPEN_SERVICE).sendToTarget();
+                        }
+                    } else if ("closeVending".equals(msgJson.getString("action"))) {
+                        mHandler.obtainMessage(IFragSwitcher.MSG_SWITCH_FRAG,
+                                paramJson.getInt("totalAmount"), paramJson.getInt("totalNum"),
+                                IFragSwitcher.FragDefines.PAYMENT_INFO).sendToTarget();
+                    }
+                }
+            } catch (JSONException e) {
+                LogUtil.e("[VendingClient] Failed to resolve json", e);
+            }
         }
     };
 
