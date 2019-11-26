@@ -6,7 +6,7 @@ interface IVendingInterface {
 
     void faceRecognize(in byte[] face);
 
-    void commodityRecognize(in List<String> imageList, String eventId, String extraType);
+    void commodityRecognize(in List<String> imageList, String eventId, String reservedField);
 
     void reportStatus(String event, int status);
 
