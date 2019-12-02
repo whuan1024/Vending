@@ -72,12 +72,13 @@ public class CameraPreview extends TextureView {
                 mCamera = Camera.open(mCameraId);
                 initCamera();
                 startPreview(surface);
+                int previewWidth = mCamera.getParameters().getPreviewSize().width;
+                int previewHeight = mCamera.getParameters().getPreviewSize().height;
 
                 mCamera.setPreviewCallback((data, camera) -> {
                     if (mLastPreviewTime + mCallbackInterval <= System.currentTimeMillis()) {
                         mPreviewCallback.onFacePreview(mCameraId,
-                                new Size(mCamera.getParameters().getPreviewSize().width,
-                                        mCamera.getParameters().getPreviewSize().height), data);
+                                new Size(previewWidth, previewHeight), data);
                         mLastPreviewTime = System.currentTimeMillis();
                     }
                 });

@@ -65,7 +65,7 @@ public class QRCodeFragment extends Fragment {
         ((TextView) view.findViewById(R.id.tv_step3)).setText(isScanCodeFrag ?
                 R.string.auto_settle : R.string.open_success);
 
-        mTimer = new CountDownTimer(1000 * 60, 1000) {
+        mTimer = new CountDownTimer(1000 * 120, 1000) {
             @Override
             public void onTick(long millisUntilFinished) {
                 // TODO: nothing
@@ -74,8 +74,8 @@ public class QRCodeFragment extends Fragment {
             @Override
             public void onFinish() {
                 if (getActivity() != null && isVisible()) {
-                    LogUtil.i("[QRCodeFragment] onFinish: return in 1 minute");
-                    getActivity().onBackPressed();
+                    LogUtil.i("[QRCodeFragment] onFinish: return in 2 minutes");
+                    getActivity().finish();
                 }
             }
         };

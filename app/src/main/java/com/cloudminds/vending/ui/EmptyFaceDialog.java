@@ -1,48 +1,26 @@
 package com.cloudminds.vending.ui;
 
-import android.content.Context;
 import android.os.Bundle;
+import android.os.CountDownTimer;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
+import android.widget.TextView;
 
 import com.cloudminds.vending.R;
+import com.cloudminds.vending.utils.LogUtil;
 
-import java.io.Serializable;
-
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.DialogFragment;
 
 public class EmptyFaceDialog extends DialogFragment {
 
-    public interface IEmptyFaceDialogCallback extends Serializable {
-        void onFaceExit();
-
-        void onFaceRetry();
-    }
-
-    private IEmptyFaceDialogCallback dialogCallback;
-
-    public static EmptyFaceDialog getInstance(IEmptyFaceDialogCallback dialogCallback) {
-        EmptyFaceDialog dialog = new EmptyFaceDialog();
-        if (dialogCallback != null) {
-            Bundle bundle = new Bundle();
-            bundle.putSerializable("Callback", dialogCallback);
-            dialog.setArguments(bundle);
-        }
-        return dialog;
-    }
-
-    @Override
-    public void onAttach(Context context) {
-        super.onAttach(context);
-        if (getArguments() != null) {
-            dialogCallback = (IEmptyFaceDialogCallback) getArguments().getSerializable("Callback");
-        }
-    }
+    private TextView mExit;
+    private CountDownTimer mTimer;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -52,26 +30,41 @@ public class EmptyFaceDialog extends DialogFragment {
 
     @Nullable
     @Override
-    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container,
+    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
         return inflater.inflate(R.layout.dialog_empty_face, container, false);
     }
 
     @Override
-    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        view.findViewById(R.id.dialog_empty_exit).setOnClickListener(v -> {
+        mExit = view.findViewById(R.id.dialog_exit);
+        mExit.setOnClickListener(v -> {
             dismiss();
-            if (dialogCallback != null) {
-                dialogCallback.onFaceExit();
+            if (getActivity() != null) {
+                getActivity().finish();
             }
         });
-        view.findViewById(R.id.dialog_empty_try).setOnClickListener(v -> {
-            dismiss();
-            if (dialogCallback != null) {
-                dialogCallback.onFaceRetry();
+        view.findViewById(R.id.dialog_retry).setOnClickListener(v -> dismiss());
+
+        mTimer = new CountDownTimer(1000 * 6, 1000) {
+            @Override
+            public void onTick(long millisUntilFinished) {
+                if (isAdded()) {
+                    mExit.setText(String.format(getString(R.string.exit_detect),
+                            millisUntilFinished / 1000));
+                }
             }
-        });
+
+            @Override
+            public void onFinish() {
+                LogUtil.i("[EmptyFaceDialog] onFinish: return in 5 seconds");
+                if (getActivity() != null && isVisible()) {
+                    getActivity().finish();
+                }
+            }
+        };
+        mTimer.start();
     }
 
     @Override
@@ -83,5 +76,11 @@ public class EmptyFaceDialog extends DialogFragment {
         layoutParams.height = WindowManager.LayoutParams.WRAP_CONTENT;
         layoutParams.gravity = Gravity.CENTER;
         window.setAttributes(layoutParams);
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        mTimer.cancel();
     }
 }

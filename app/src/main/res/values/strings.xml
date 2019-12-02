@@ -2,7 +2,7 @@
     <string name="app_name">Vending</string>
     <string name="face_detect">请保持正脸在取景框内</string>
     <string name="no_face_detected">未能识别到人脸~</string>
-    <string name="exit_detect">退出</string>
+    <string name="exit_detect">退出 (%ds)</string>
     <string name="try_again">再试一次</string>
     <string name="remind_opening_service">系统检测到你未开通以下服务</string>
     <string name="exempt_pwd">开通免密支付</string>
@@ -28,6 +28,6 @@
     <string name="coupon">优惠劵</string>
     <string name="actual_payment">已付(共%d件)</string>
     <string name="order_details_hint">【订单详情】可前往我的-我的订单查看</string>
-    <string name="ok_countdown">好的 (%ds)"</string>
+    <string name="ok_countdown">好的 (%ds)</string>
     <string name="request_camera_permission">This application needs camera permission.</string>
 </resources>

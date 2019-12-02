@@ -105,9 +105,6 @@ public class VendingClient {
                             MideaCabinetSDK.INSTANCE.openLock(true);
                             mHandler.obtainMessage(IFragSwitcher.MSG_SWITCH_FRAG,
                                     IFragSwitcher.FragDefines.LOCK_OPENED).sendToTarget();
-                        } else {
-                            mHandler.obtainMessage(IFragSwitcher.MSG_SWITCH_FRAG,
-                                    IFragSwitcher.FragDefines.OPEN_SERVICE).sendToTarget();
                         }
                     } else if ("closeVending".equals(msgJson.getString("action"))) {
                         mHandler.obtainMessage(IFragSwitcher.MSG_SWITCH_FRAG,
@@ -133,10 +130,10 @@ public class VendingClient {
         }
     }
 
-    public void commodityRecognize(List<String> imageList, String eventId, String extraType) {
+    public void commodityRecognize(List<String> imageList, String eventId, String reservedField) {
         if (mIsBind) {
             try {
-                mIVendingInterface.commodityRecognize(imageList, eventId, extraType);
+                mIVendingInterface.commodityRecognize(imageList, eventId, reservedField);
             } catch (RemoteException e) {
                 e.printStackTrace();
             }
