@@ -20,21 +20,23 @@ public class VendingActivity extends AppCompatActivity implements IFragSwitcher 
     private Fragment mCurrentFragment;
 
     private FaceDetectFragment mFaceDetectFragment;
-    private QRCodeFragment mQRCodeFragment;
-    private ProcessFragment mProcessFragment;
+    private ScanCodeFragment mScanCodeFragment;
+    private OpenServiceFragment mOpenServiceFragment;
+    private LockOpenedFragment mLockOpenedFragment;
+    private SettleUpFragment mSettleUpFragment;
     private PaymentInfoFragment mPaymentInfoFragment;
 
     private Bundle mBundle = new Bundle();
 
     private final Handler mSwitchFragHandler = new Handler(msg -> {
-        if (msg.what == IFragSwitcher.MSG_SWITCH_FRAG) {
+        if (msg.what == MSG_SWITCH_FRAG) {
             String fragName = (String) msg.obj;
             if (FragDefines.PAYMENT_INFO.equals(fragName)) {
                 mBundle.putInt(PaymentInfoFragment.TOTAL_AMOUNT, msg.arg1);
                 mBundle.putInt(PaymentInfoFragment.TOTAL_NUMBER, msg.arg2);
             }
             switchFragTo(fragName);
-        } else if (msg.what == IFragSwitcher.MSG_FINISH_ACTV) {
+        } else if (msg.what == MSG_FINISH_ACTV) {
             finish();
         }
         return true;
@@ -84,20 +86,28 @@ public class VendingActivity extends AppCompatActivity implements IFragSwitcher 
                 targetFragment = mFaceDetectFragment;
                 break;
             case FragDefines.SCAN_CODE:
-            case FragDefines.OPEN_SERVICE:
-                if (mQRCodeFragment == null || !fragName.equals(
-                        mQRCodeFragment.getArguments().getString(IFragSwitcher.FRAG_NAME))) {
-                    mQRCodeFragment = QRCodeFragment.newInstance(fragName);
+                if (mScanCodeFragment == null) {
+                    mScanCodeFragment = new ScanCodeFragment();
                 }
-                targetFragment = mQRCodeFragment;
+                targetFragment = mScanCodeFragment;
+                break;
+            case FragDefines.OPEN_SERVICE:
+                if (mOpenServiceFragment == null) {
+                    mOpenServiceFragment = new OpenServiceFragment();
+                }
+                targetFragment = mOpenServiceFragment;
                 break;
             case FragDefines.LOCK_OPENED:
-            case FragDefines.SETTLE_UP:
-                if (mProcessFragment == null || !fragName.equals(
-                        mProcessFragment.getArguments().getString(IFragSwitcher.FRAG_NAME))) {
-                    mProcessFragment = ProcessFragment.newInstance(fragName);
+                if (mLockOpenedFragment == null) {
+                    mLockOpenedFragment = new LockOpenedFragment();
                 }
-                targetFragment = mProcessFragment;
+                targetFragment = mLockOpenedFragment;
+                break;
+            case FragDefines.SETTLE_UP:
+                if (mSettleUpFragment == null) {
+                    mSettleUpFragment = new SettleUpFragment();
+                }
+                targetFragment = mSettleUpFragment;
                 break;
             case FragDefines.PAYMENT_INFO:
                 if (mPaymentInfoFragment == null) {

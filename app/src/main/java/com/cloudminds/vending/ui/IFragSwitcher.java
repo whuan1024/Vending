@@ -21,7 +21,6 @@ public interface IFragSwitcher extends Serializable {
     int MSG_FINISH_ACTV = 102;
 
     String TARGET_FRAG = "target_frag";
-    String FRAG_NAME = "frag_name";
 
     @Retention(RetentionPolicy.SOURCE)
     @Target({ElementType.PARAMETER, ElementType.FIELD})

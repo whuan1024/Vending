@@ -51,9 +51,14 @@ public class FaceDetectFragment extends Fragment implements FaceDetect.InitCallB
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
         ((CameraPreview) view.findViewById(R.id.camera_preview_normal)).setPreviewCallback(this);
         ((CameraPreview) view.findViewById(R.id.camera_preview_infrared)).setPreviewCallback(this);
-        view.findViewById(R.id.close).setOnClickListener(v -> getActivity().onBackPressed());
+        view.findViewById(R.id.close).setOnClickListener(v -> {
+            if (getActivity() != null) {
+                getActivity().onBackPressed();
+            }
+        });
 
         FaceDetect.init(getContext(), this);
         mFaceDetect = new FaceDetect();
@@ -110,7 +115,7 @@ public class FaceDetectFragment extends Fragment implements FaceDetect.InitCallB
                         if (mStrangerFaceDialog == null) {
                             mStrangerFaceDialog = new StrangerFaceDialog();
                         }
-                        if (!mStrangerFaceDialog.isAdded() && !mStrangerFaceDialog.isRemoving()) {
+                        if (!mStrangerFaceDialog.isAdded() && getFragmentManager() != null) {
                             mStrangerFaceDialog.show(getFragmentManager(), mStrangerFaceDialog.getClass().getSimpleName());
                         }
                     }
@@ -126,7 +131,7 @@ public class FaceDetectFragment extends Fragment implements FaceDetect.InitCallB
                         if (mEmptyFaceDialog == null) {
                             mEmptyFaceDialog = new EmptyFaceDialog();
                         }
-                        if (!mEmptyFaceDialog.isAdded() && !mEmptyFaceDialog.isRemoving()) {
+                        if (!mEmptyFaceDialog.isAdded() && getFragmentManager() != null) {
                             mEmptyFaceDialog.show(getFragmentManager(), mEmptyFaceDialog.getClass().getSimpleName());
                         }
                     }

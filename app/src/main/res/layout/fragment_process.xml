@@ -1,11 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/bg_white"
-    tools:context="com.cloudminds.vending.ui.ProcessFragment">
+    android:background="@drawable/bg_white">
 
     <ImageView
         android:id="@+id/lock_opened"

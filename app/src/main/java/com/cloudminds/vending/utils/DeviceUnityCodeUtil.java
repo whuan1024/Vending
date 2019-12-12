@@ -163,4 +163,8 @@ public class DeviceUnityCodeUtil {
         }
         return "";
     }
+
+    public static String getQrCodeContent(Context context) {
+        return "https://sit137.cloudminds.com?rcuCode=" + getDeviceUnityCode(context);
+    }
 }

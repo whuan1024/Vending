@@ -2,11 +2,9 @@
 <androidx.constraintlayout.widget.ConstraintLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/bg_blue"
-    tools:context="com.cloudminds.vending.ui.QRCodeFragment">
+    android:background="@drawable/bg_blue">
 
     <ImageView
         android:id="@+id/back"
@@ -30,7 +28,7 @@
         app:layout_constraintTop_toTopOf="parent"/>
 
     <RelativeLayout
-        android:id="@+id/ll_qr_code"
+        android:id="@+id/scanning_area"
         android:layout_width="920dp"
         android:layout_height="1012dp"
         android:layout_marginTop="234dp"
@@ -90,7 +88,7 @@
         android:background="@drawable/bg_card"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/ll_qr_code">
+        app:layout_constraintTop_toBottomOf="@+id/scanning_area">
 
         <ImageView
             android:id="@+id/img_step1"
