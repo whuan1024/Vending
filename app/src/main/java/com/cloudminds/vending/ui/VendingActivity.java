@@ -38,6 +38,18 @@ public class VendingActivity extends AppCompatActivity implements IFragSwitcher 
             switchFragTo(fragName);
         } else if (msg.what == MSG_FINISH_ACTV) {
             finish();
+        } else if (msg.what == MSG_SHOW_DIALOG) {
+            UserCheckDialog dialog = new UserCheckDialog();
+            mBundle.putString(UserCheckDialog.PHONE_NUMBER, (String) msg.obj);
+            mBundle.putInt(UserCheckDialog.QUICK_PAYMENT, msg.arg1);
+            mBundle.putInt(UserCheckDialog.UNPAID_ORDER, msg.arg2);
+            dialog.setArguments(mBundle);
+            if (!dialog.isAdded()) {
+                dialog.show(getSupportFragmentManager(), dialog.getClass().getSimpleName());
+            }
+            if (mFaceDetectFragment != null) {
+                mFaceDetectFragment.setUserCheckDialog(dialog);
+            }
         }
         return true;
     });

@@ -50,7 +50,7 @@ public class OpenServiceFragment extends Fragment {
         ((TextView) view.findViewById(R.id.tv_step2)).setText(R.string.face_login);
         ((TextView) view.findViewById(R.id.tv_step3)).setText(R.string.open_success);
 
-        mTimer = new CountDownTimer(1000 * 120, 1000) {
+        mTimer = new CountDownTimer(1000 * 60 * 3, 1000) {
             @Override
             public void onTick(long millisUntilFinished) {
                 // TODO: nothing
@@ -59,7 +59,7 @@ public class OpenServiceFragment extends Fragment {
             @Override
             public void onFinish() {
                 if (getActivity() != null && isVisible()) {
-                    LogUtil.i("[OpenServiceFragment] onFinish: return in 2 minutes");
+                    LogUtil.i("[OpenServiceFragment] onFinish: return in 3 minutes");
                     getActivity().finish();
                 }
             }

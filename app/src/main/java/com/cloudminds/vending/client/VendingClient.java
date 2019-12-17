@@ -105,6 +105,13 @@ public class VendingClient {
                             MideaCabinetSDK.INSTANCE.openLock(true);
                             mHandler.obtainMessage(IFragSwitcher.MSG_SWITCH_FRAG,
                                     IFragSwitcher.FragDefines.LOCK_OPENED).sendToTarget();
+                        } else {
+                            String phone = paramJson.getString("phone");
+                            if (!phone.isEmpty()) {
+                                mHandler.obtainMessage(IFragSwitcher.MSG_SHOW_DIALOG,
+                                        paramJson.getInt("payOpenFlag"), paramJson.getInt("unPayOrderFlag"),
+                                        phone).sendToTarget();
+                            }
                         }
                     } else if ("closeVending".equals(msgJson.getString("action"))) {
                         mHandler.obtainMessage(IFragSwitcher.MSG_SWITCH_FRAG,

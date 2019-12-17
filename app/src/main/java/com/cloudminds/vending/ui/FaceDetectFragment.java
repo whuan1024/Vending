@@ -31,6 +31,7 @@ public class FaceDetectFragment extends Fragment implements FaceDetect.InitCallB
 
     private EmptyFaceDialog mEmptyFaceDialog;
     private StrangerFaceDialog mStrangerFaceDialog;
+    private UserCheckDialog mUserCheckDialog;
 
     private FaceDetect mFaceDetect;
 
@@ -42,6 +43,10 @@ public class FaceDetectFragment extends Fragment implements FaceDetect.InitCallB
     }
 
     private FaceDetectImage mDetectedImage = new FaceDetectImage();
+
+    public void setUserCheckDialog(UserCheckDialog userCheckDialog) {
+        mUserCheckDialog = userCheckDialog;
+    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -81,7 +86,8 @@ public class FaceDetectFragment extends Fragment implements FaceDetect.InitCallB
     public void onFacePreview(int cameraId, Size previewSize, @NonNull byte[] picBytes) {
         if (mDetectInitSuccess && isVisible()
                 && (mEmptyFaceDialog == null || !mEmptyFaceDialog.isVisible())
-                && (mStrangerFaceDialog == null || !mStrangerFaceDialog.isVisible())) {
+                && (mStrangerFaceDialog == null || !mStrangerFaceDialog.isVisible())
+                && (mUserCheckDialog == null || !mUserCheckDialog.isVisible())) {
             LogUtil.i("[FaceDetectFragment] onFacePreview: CameraId = " + cameraId + ", previewSize = "
                     + previewSize + ", picBytes length = " + picBytes.length);
             if (cameraId == 0) {
