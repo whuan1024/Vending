@@ -27,6 +27,7 @@ public class VendingClient {
     private boolean mIsBind = false;
     private IVendingInterface mIVendingInterface;
     private static volatile VendingClient mInstance;
+    private static final String TTS = "期待您下次光临";
 
     public static VendingClient getInstance(Context context) {
         if (mInstance == null) {
@@ -117,6 +118,7 @@ public class VendingClient {
                         mHandler.obtainMessage(IFragSwitcher.MSG_SWITCH_FRAG,
                                 paramJson.getInt("totalAmount"), paramJson.getInt("totalNum"),
                                 IFragSwitcher.FragDefines.PAYMENT_INFO).sendToTarget();
+                        playTts(TTS);
                     }
                 }
             } catch (JSONException e) {
@@ -146,6 +148,18 @@ public class VendingClient {
             }
         } else {
             LogUtil.e("[VendingClient] commodityRecognize: Service not connected!");
+        }
+    }
+
+    public void playTts(String text) {
+        if (mIsBind) {
+            try {
+                mIVendingInterface.playTts(text);
+            } catch (RemoteException e) {
+                e.printStackTrace();
+            }
+        } else {
+            LogUtil.e("[VendingClient] playTts: Service not connected!");
         }
     }
 
