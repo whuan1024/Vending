@@ -24,7 +24,7 @@ public class VendingClient {
 
     private Context mContext;
     private Handler mHandler;
-    private boolean mIsBind = false;
+    private static boolean mIsBind = false;
     private IVendingInterface mIVendingInterface;
     private static volatile VendingClient mInstance;
     private static final String TTS = "期待您下次光临";
@@ -33,8 +33,14 @@ public class VendingClient {
         if (mInstance == null) {
             synchronized (VendingClient.class) {
                 if (mInstance == null) {
+                    LogUtil.d("[VendingClient] init");
                     mInstance = new VendingClient(context);
                 }
+            }
+        } else {
+            if (!mIsBind) {
+                LogUtil.d("[VendingClient] re-init");
+                mInstance = new VendingClient(context);
             }
         }
         return mInstance;
@@ -58,24 +64,24 @@ public class VendingClient {
 
     private ServiceConnection mConnection = new ServiceConnection() {
         @Override
-        public void onServiceConnected(ComponentName componentName, IBinder iBinder) {
+        public void onServiceConnected(ComponentName name, IBinder service) {
             LogUtil.d("[VendingClient] onServiceConnected");
-            mIVendingInterface = IVendingInterface.Stub.asInterface(iBinder);
+            mIVendingInterface = IVendingInterface.Stub.asInterface(service);
             try {
                 mIVendingInterface.registerCallback(mIVendingListener);
             } catch (RemoteException e) {
-                e.printStackTrace();
+                LogUtil.e("[VendingClient] Failed to register callback", e);
             }
             mIsBind = true;
         }
 
         @Override
-        public void onServiceDisconnected(ComponentName componentName) {
+        public void onServiceDisconnected(ComponentName name) {
             LogUtil.d("[VendingClient] onServiceDisconnected");
             try {
                 mIVendingInterface.unregisterCallback(mIVendingListener);
             } catch (RemoteException e) {
-                e.printStackTrace();
+                LogUtil.e("[VendingClient] Failed to unregister callback", e);
             }
             mIVendingInterface = null;
             mIsBind = false;
@@ -132,7 +138,7 @@ public class VendingClient {
             try {
                 mIVendingInterface.faceRecognize(face);
             } catch (RemoteException e) {
-                e.printStackTrace();
+                LogUtil.e("[VendingClient] Failed to face recognize", e);
             }
         } else {
             LogUtil.e("[VendingClient] faceRecognize: Service not connected!");
@@ -144,7 +150,7 @@ public class VendingClient {
             try {
                 mIVendingInterface.commodityRecognize(imageList, eventId, reservedField);
             } catch (RemoteException e) {
-                e.printStackTrace();
+                LogUtil.e("[VendingClient] Failed to commodity recognize", e);
             }
         } else {
             LogUtil.e("[VendingClient] commodityRecognize: Service not connected!");
@@ -156,7 +162,7 @@ public class VendingClient {
             try {
                 mIVendingInterface.playTts(text);
             } catch (RemoteException e) {
-                e.printStackTrace();
+                LogUtil.e("[VendingClient] Failed to play tts", e);
             }
         } else {
             LogUtil.e("[VendingClient] playTts: Service not connected!");
@@ -168,7 +174,7 @@ public class VendingClient {
             try {
                 mIVendingInterface.reportStatus(event, status);
             } catch (RemoteException e) {
-                e.printStackTrace();
+                LogUtil.e("[VendingClient] Failed to report status", e);
             }
         } else {
             LogUtil.e("[VendingClient] reportStatus: Service not connected!");
@@ -180,7 +186,7 @@ public class VendingClient {
             try {
                 mIVendingInterface.reportError(code, msg, extra);
             } catch (RemoteException e) {
-                e.printStackTrace();
+                LogUtil.e("[VendingClient] Failed to report error", e);
             }
         } else {
             LogUtil.e("[VendingClient] reportError: Service not connected!");
