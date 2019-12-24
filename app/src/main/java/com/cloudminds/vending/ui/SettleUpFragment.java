@@ -37,7 +37,7 @@ public class SettleUpFragment extends Fragment {
         startAnim(view.findViewById(R.id.middle_bar));
         startAnim(view.findViewById(R.id.right_bar));
 
-        mTimer = new CountDownTimer(1000 * 30, 1000) {
+        mTimer = new CountDownTimer(1000 * 60, 1000) {
             @Override
             public void onTick(long millisUntilFinished) {
                 // TODO: nothing
@@ -46,7 +46,7 @@ public class SettleUpFragment extends Fragment {
             @Override
             public void onFinish() {
                 if (getActivity() != null && isVisible()) {
-                    LogUtil.i("[SettleUpFragment] onFinish: return in 30 seconds");
+                    LogUtil.i("[SettleUpFragment] onFinish: return in 1 minute");
                     getActivity().finish();
                 }
             }

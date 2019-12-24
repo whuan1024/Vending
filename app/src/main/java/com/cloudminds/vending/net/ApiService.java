@@ -19,6 +19,9 @@ public interface ApiService {
     @POST("identifyfail")
     Call<BaseResult> identifyFail(@Body MetaInfo info);
 
+    @POST("opentimeout")
+    Call<BaseResult> openTimeout(@Body MetaInfo info);
+
     @Multipart
     @POST("uploadmonitor")
     Call<BaseResult> uploadMonitor(@Part MultipartBody.Part meta, @Part MultipartBody.Part file);

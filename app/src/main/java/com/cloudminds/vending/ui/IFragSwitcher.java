@@ -20,6 +20,7 @@ public interface IFragSwitcher extends Serializable {
     int MSG_SWITCH_FRAG = 101;
     int MSG_FINISH_ACTV = 102;
     int MSG_SHOW_DIALOG = 103;
+    int MSG_SHOW_TOAST = 104;
 
     String TARGET_FRAG = "target_frag";
 

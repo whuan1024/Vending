@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.view.Window;
 import android.view.WindowManager;
+import android.widget.Toast;
 
 import com.cloudminds.vending.R;
 import com.cloudminds.vending.client.VendingClient;
@@ -50,6 +51,8 @@ public class VendingActivity extends AppCompatActivity implements IFragSwitcher 
             if (mFaceDetectFragment != null) {
                 mFaceDetectFragment.setUserCheckDialog(dialog);
             }
+        } else if (msg.what == MSG_SHOW_TOAST) {
+            Toast.makeText(this, (String) msg.obj, Toast.LENGTH_LONG).show();
         }
         return true;
     });

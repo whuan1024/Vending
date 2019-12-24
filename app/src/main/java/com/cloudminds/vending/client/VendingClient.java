@@ -28,6 +28,7 @@ public class VendingClient {
     private IVendingInterface mIVendingInterface;
     private static volatile VendingClient mInstance;
     private static final String TTS = "期待您下次光临";
+    private int mRetryCommodityRecognize = 0;
 
     public static VendingClient getInstance(Context context) {
         if (mInstance == null) {
@@ -125,6 +126,23 @@ public class VendingClient {
                                 paramJson.getInt("totalAmount"), paramJson.getInt("totalNum"),
                                 IFragSwitcher.FragDefines.PAYMENT_INFO).sendToTarget();
                         playTts(TTS);
+                        mRetryCommodityRecognize = 0;
+                    }
+                } else if (msgJson.has("code") && msgJson.has("excption")) {
+                    if (msgJson.getInt("code") != 0) {
+                        mRetryCommodityRecognize++;
+                        String error = "Commodity Recognize Error " + mRetryCommodityRecognize + "\n"
+                                + "code:" + msgJson.getInt("code") + "\n"
+                                + "errorDetail:" + msgJson.getString("errorDetail") + "\n"
+                                + "errorMsg:" + msgJson.getString("errorMsg") + "\n"
+                                + "exception:" + msgJson.getString("excption");
+                        mHandler.obtainMessage(IFragSwitcher.MSG_SHOW_TOAST, error).sendToTarget();
+                        if (mRetryCommodityRecognize < 3) {
+                            DoorController.getInstance(mContext).takePhotos();
+                        } else {
+                            DoorController.getInstance(mContext).reportException();
+                            mHandler.obtainMessage(IFragSwitcher.MSG_FINISH_ACTV).sendToTarget();
+                        }
                     }
                 }
             } catch (JSONException e) {

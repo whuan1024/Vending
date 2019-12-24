@@ -66,9 +66,9 @@ public class DoorController {
 
     public void closeDoor() {
         switchUI();
-        takePhotos();
         stopMonitor();
-        reportNormal();
+        takePhotos();
+        reportCloseDoor();
     }
 
     public void openTimeout() {
@@ -80,28 +80,36 @@ public class DoorController {
         mHandler.obtainMessage(IFragSwitcher.MSG_FINISH_ACTV).sendToTarget();
     }
 
+    private void showToast(String toast) {
+        mHandler.obtainMessage(IFragSwitcher.MSG_SHOW_TOAST, toast).sendToTarget();
+    }
+
     private void switchUI() {
         mHandler.obtainMessage(IFragSwitcher.MSG_SWITCH_FRAG,
                 IFragSwitcher.FragDefines.SETTLE_UP).sendToTarget();
     }
 
-    private void takePhotos() {
-        new Thread(() -> {
-            boolean camera1OK = MideaCabinetSDK.INSTANCE.checkCamera(1);
-            boolean camera2OK = MideaCabinetSDK.INSTANCE.checkCamera(2);
-            boolean camera3OK = MideaCabinetSDK.INSTANCE.checkCamera(3);
-            boolean camera4OK = MideaCabinetSDK.INSTANCE.checkCamera(4);
-            LogUtil.i("[DoorController] camera1OK: " + camera1OK + ", camera2OK: " + camera2OK +
-                    ", camera3OK: " + camera3OK + ", camera4OK: " + camera4OK);
-            if (camera1OK && camera2OK && camera3OK && camera4OK) {
+    public void takePhotos() {
+        boolean camera1OK = MideaCabinetSDK.INSTANCE.checkCamera(1);
+        boolean camera2OK = MideaCabinetSDK.INSTANCE.checkCamera(2);
+        boolean camera3OK = MideaCabinetSDK.INSTANCE.checkCamera(3);
+        boolean camera4OK = MideaCabinetSDK.INSTANCE.checkCamera(4);
+        LogUtil.i("[DoorController] camera1OK: " + camera1OK + ", camera2OK: " + camera2OK +
+                ", camera3OK: " + camera3OK + ", camera4OK: " + camera4OK);
+        if (camera1OK && camera2OK && camera3OK && camera4OK) {
+            new Thread(() -> {
                 MideaCabinetSDK.INSTANCE.startTakePhotos(2);
                 List<String> imageList = new ArrayList<>();
                 for (int i = 1; i < 5; i++) {
                     imageList.add(MIDEA_PATH + "/imageFile/" + i + ".jpg");
                 }
                 VendingClient.getInstance(mContext).commodityRecognize(imageList, mEventId, "reserved");
-            }
-        }).start();
+            }).start();
+        } else {
+            showToast("Commodity Camera Error");
+            finishActivity();
+            reportException();
+        }
     }
 
     private void startMonitor() {
@@ -117,23 +125,23 @@ public class DoorController {
     }
 
     private void stopMonitor() {
-        new Thread(() -> {
-            if (MideaCabinetSDK.INSTANCE.checkCamera(7)) {
-                LogUtil.i("[DoorController] stopMonitor");
-                MideaCabinetSDK.INSTANCE.stopCapture();
+        if (MideaCabinetSDK.INSTANCE.checkCamera(7)) {
+            LogUtil.i("[DoorController] stopMonitor");
+            MideaCabinetSDK.INSTANCE.stopCapture();
+            new Thread(() -> {
                 try {
                     ZipUtil.zipFile(MIDEA_PATH + "/monitorFile/" + mEventId,
                             MIDEA_PATH + "/monitorFile/" + mEventId + ".zip");
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
-            } else {
-                LogUtil.e("[DoorController] stopMonitor: Monitor camera not found!");
-            }
-        }).start();
+            }).start();
+        } else {
+            LogUtil.e("[DoorController] stopMonitor: Monitor camera not found!");
+        }
     }
 
-    private void reportNormal() {
+    private void reportCloseDoor() {
         NormalInfo normalInfo = new NormalInfo();
         normalInfo.setRcuCode(DeviceUnityCodeUtil.getDeviceUnityCode(mContext));
         normalInfo.setEventId(mEventId);
@@ -164,6 +172,36 @@ public class DoorController {
         });
     }
 
+    public void reportException() {
+        MetaInfo metaInfo = new MetaInfo();
+        metaInfo.setRcuCode(DeviceUnityCodeUtil.getDeviceUnityCode(mContext));
+        metaInfo.setEventId(mEventId);
+        LogUtil.i("[DoorController] report exception meta info: " + metaInfo);
+
+        ApiService apiService = RetrofitUtil.getInstance().create(ApiService.class);
+        apiService.identifyFail(metaInfo).enqueue(new Callback<BaseResult>() {
+            @Override
+            public void onResponse(Call<BaseResult> call, Response<BaseResult> response) {
+                if (response.code() == 200) {
+                    BaseResult result = response.body();
+                    LogUtil.i("[DoorController] identify fail--BaseResult: " + result);
+                    if (result.getCode() == 0) {
+                        LogUtil.i("[DoorController] identify fail--success");
+                    } else {
+                        LogUtil.e("[DoorController] identify fail--response error, code: " + result.getCode() + ", " + "message: " + result.getMessage());
+                    }
+                } else {
+                    LogUtil.e("[DoorController] identify fail--response code wrong: " + response.code());
+                }
+            }
+
+            @Override
+            public void onFailure(Call<BaseResult> call, Throwable t) {
+                LogUtil.e("[DoorController] identify fail--onFailure", t);
+            }
+        });
+    }
+
     private void reportOpenTimeout() {
         MetaInfo metaInfo = new MetaInfo();
         metaInfo.setRcuCode(DeviceUnityCodeUtil.getDeviceUnityCode(mContext));
@@ -171,7 +209,7 @@ public class DoorController {
         LogUtil.i("[DoorController] report open door timeout meta info: " + metaInfo);
 
         ApiService apiService = RetrofitUtil.getInstance().create(ApiService.class);
-        apiService.identifyFail(metaInfo).enqueue(new Callback<BaseResult>() {
+        apiService.openTimeout(metaInfo).enqueue(new Callback<BaseResult>() {
             @Override
             public void onResponse(Call<BaseResult> call, Response<BaseResult> response) {
                 if (response.code() == 200) {
