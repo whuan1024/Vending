@@ -1,7 +1,5 @@
 package com.cloudminds.vending.ui;
 
-import android.Manifest;
-import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.util.Size;
 import android.view.LayoutInflater;
@@ -21,9 +19,6 @@ import androidx.fragment.app.Fragment;
 
 public class FaceDetectFragment extends Fragment implements FaceDetect.InitCallBack,
         IPreviewCallback {
-
-    private static final int REQUEST_CAMERA_PERMISSION = 1;
-    private static final String FRAGMENT_DIALOG = "dialog";
 
     private int mSample = 0;
     private int mRetry = 0;
@@ -143,34 +138,6 @@ public class FaceDetectFragment extends Fragment implements FaceDetect.InitCallB
                     }
                 }
             }
-        }
-    }
-
-    @Override
-    public void onCameraPermissionDenied(int cameraId) {
-        if (cameraId == 0) {
-            //此处加入摄像头Id判断，是为了对于双摄的情况确保弹框只弹一次
-            requestCameraPermission();
-        }
-    }
-
-    private void requestCameraPermission() {
-        if (shouldShowRequestPermissionRationale(Manifest.permission.CAMERA)) {
-            new ConfirmationDialog().show(getChildFragmentManager(), FRAGMENT_DIALOG);
-        } else {
-            requestPermissions(new String[]{Manifest.permission.CAMERA}, REQUEST_CAMERA_PERMISSION);
-        }
-    }
-
-    @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions,
-                                           @NonNull int[] grantResults) {
-        if (requestCode == REQUEST_CAMERA_PERMISSION) {
-            if (grantResults.length != 1 || grantResults[0] != PackageManager.PERMISSION_GRANTED) {
-                new ErrorDialog().show(getChildFragmentManager(), FRAGMENT_DIALOG);
-            }
-        } else {
-            super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         }
     }
 }

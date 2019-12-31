@@ -1,9 +1,7 @@
 package com.cloudminds.vending.view;
 
-import android.Manifest;
 import android.app.Activity;
 import android.content.Context;
-import android.content.pm.PackageManager;
 import android.content.res.TypedArray;
 import android.graphics.ImageFormat;
 import android.graphics.SurfaceTexture;
@@ -17,8 +15,6 @@ import com.cloudminds.vending.R;
 import com.cloudminds.vending.utils.LogUtil;
 
 import java.io.IOException;
-
-import androidx.core.content.ContextCompat;
 
 public class CameraPreview extends TextureView {
 
@@ -59,15 +55,6 @@ public class CameraPreview extends TextureView {
         public void onSurfaceTextureAvailable(SurfaceTexture surface, int width, int height) {
             LogUtil.i("[CameraPreview] onSurfaceTextureAvailable: camera count = " + Camera.getNumberOfCameras()
                     + ", mCameraId = " + mCameraId + ", width = " + width + ", height = " + height);
-
-            if (ContextCompat.checkSelfPermission(getContext(), Manifest.permission.CAMERA)
-                    != PackageManager.PERMISSION_GRANTED) {
-                if (mPreviewCallback != null) {
-                    mPreviewCallback.onCameraPermissionDenied(mCameraId);
-                }
-                return;
-            }
-
             try {
                 mCamera = Camera.open(mCameraId);
                 initCamera();

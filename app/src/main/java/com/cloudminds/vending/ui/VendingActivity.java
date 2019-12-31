@@ -1,5 +1,7 @@
 package com.cloudminds.vending.ui;
 
+import android.Manifest;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.os.Handler;
 import android.view.Window;
@@ -11,6 +13,7 @@ import com.cloudminds.vending.client.VendingClient;
 import com.cloudminds.vending.controller.DoorController;
 import com.cloudminds.vending.utils.LogUtil;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
@@ -28,6 +31,8 @@ public class VendingActivity extends AppCompatActivity implements IFragSwitcher 
     private PaymentInfoFragment mPaymentInfoFragment;
 
     private Bundle mBundle = new Bundle();
+    private boolean mHasPermission = true;
+    private static final int REQUEST_CAMERA_PERMISSION = 1;
 
     private final Handler mSwitchFragHandler = new Handler(msg -> {
         if (msg.what == MSG_SWITCH_FRAG) {
@@ -57,20 +62,46 @@ public class VendingActivity extends AppCompatActivity implements IFragSwitcher 
         return true;
     });
 
+    private void start() {
+        VendingClient.getInstance(this).setHandler(mSwitchFragHandler);
+        DoorController.getInstance(this).setHandler(mSwitchFragHandler);
+        switchFragTo(getIntent().getStringExtra(TARGET_FRAG));
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
         setContentView(R.layout.activity_vending);
-        VendingClient.getInstance(this).setHandler(mSwitchFragHandler);
-        DoorController.getInstance(this).setHandler(mSwitchFragHandler);
+
+        if (checkSelfPermission(Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
+            LogUtil.i("[VendingActivity] no camera permission");
+            mHasPermission = false;
+            requestPermissions(new String[]{Manifest.permission.CAMERA}, REQUEST_CAMERA_PERMISSION);
+        }
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions,
+                                           @NonNull int[] grantResults) {
+        if (requestCode == REQUEST_CAMERA_PERMISSION) {
+            if (grantResults.length == 1 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                LogUtil.i("[VendingActivity] camera permission granted");
+                mHasPermission = true;
+                start();
+            } else {
+                finish();
+            }
+        }
     }
 
     @Override
     protected void onStart() {
         super.onStart();
-        switchFragTo(getIntent().getStringExtra(TARGET_FRAG));
+        if (mHasPermission) {
+            start();
+        }
     }
 
     @Override

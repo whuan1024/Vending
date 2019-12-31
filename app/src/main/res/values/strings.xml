@@ -31,5 +31,4 @@
     <string name="ok_countdown">好的 (%ds)</string>
     <string name="has_unpaid_order">亲，检测到您的%s账号存在一笔未支付订单，请扫码完成支付后再进行消费。</string>
     <string name="no_quick_payment">亲，检测到您的%s账号未开通免密支付，请开通免密支付后再进行消费。</string>
-    <string name="request_camera_permission">This application needs camera permission.</string>
 </resources>
