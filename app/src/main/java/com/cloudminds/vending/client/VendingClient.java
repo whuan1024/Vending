@@ -22,9 +22,13 @@ import java.util.List;
 
 public class VendingClient {
 
+    private static final int NOT_INIT = -1;
+    private static final int UNBINDING = 0;
+    private static final int BINDING = 1;
+
     private Context mContext;
     private Handler mHandler;
-    private static boolean mIsBind = false;
+    private static int mIsBind = NOT_INIT;
     private IVendingInterface mIVendingInterface;
     private static volatile VendingClient mInstance;
     private static final String TTS = "期待您下次光临";
@@ -39,7 +43,7 @@ public class VendingClient {
                 }
             }
         } else {
-            if (!mIsBind) {
+            if (mIsBind == UNBINDING) {
                 LogUtil.d("[VendingClient] re-init");
                 mInstance = new VendingClient(context);
             }
@@ -73,7 +77,7 @@ public class VendingClient {
             } catch (RemoteException e) {
                 LogUtil.e("[VendingClient] Failed to register callback", e);
             }
-            mIsBind = true;
+            mIsBind = BINDING;
         }
 
         @Override
@@ -85,7 +89,7 @@ public class VendingClient {
                 LogUtil.e("[VendingClient] Failed to unregister callback", e);
             }
             mIVendingInterface = null;
-            mIsBind = false;
+            mIsBind = UNBINDING;
         }
     };
 
@@ -152,7 +156,7 @@ public class VendingClient {
     };
 
     public void faceRecognize(byte[] face) {
-        if (mIsBind) {
+        if (mIsBind == BINDING) {
             try {
                 mIVendingInterface.faceRecognize(face);
             } catch (RemoteException e) {
@@ -164,7 +168,7 @@ public class VendingClient {
     }
 
     public void commodityRecognize(List<String> imageList, String eventId, String reservedField) {
-        if (mIsBind) {
+        if (mIsBind == BINDING) {
             try {
                 mIVendingInterface.commodityRecognize(imageList, eventId, reservedField);
             } catch (RemoteException e) {
@@ -176,7 +180,7 @@ public class VendingClient {
     }
 
     public void playTts(String text) {
-        if (mIsBind) {
+        if (mIsBind == BINDING) {
             try {
                 mIVendingInterface.playTts(text);
             } catch (RemoteException e) {
@@ -188,7 +192,7 @@ public class VendingClient {
     }
 
     public void reportStatus(String event, int status) {
-        if (mIsBind) {
+        if (mIsBind == BINDING) {
             try {
                 mIVendingInterface.reportStatus(event, status);
             } catch (RemoteException e) {
@@ -200,7 +204,7 @@ public class VendingClient {
     }
 
     public void reportError(String code, String msg, String extra) {
-        if (mIsBind) {
+        if (mIsBind == BINDING) {
             try {
                 mIVendingInterface.reportError(code, msg, extra);
             } catch (RemoteException e) {

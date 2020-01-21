@@ -31,10 +31,15 @@ public class VendingActivity extends AppCompatActivity implements IFragSwitcher 
     private PaymentInfoFragment mPaymentInfoFragment;
 
     private Bundle mBundle = new Bundle();
-    private boolean mHasPermission = true;
-    private static final int REQUEST_CAMERA_PERMISSION = 1;
 
-    private final Handler mSwitchFragHandler = new Handler(msg -> {
+    private boolean mAllPermissionsGranted = true;
+    private static final int REQUEST_PERMISSIONS_CODE = 1001;
+    private static final String[] PERMISSIONS = new String[]{
+            Manifest.permission.CAMERA,
+            Manifest.permission.READ_PHONE_STATE,
+            Manifest.permission.WRITE_EXTERNAL_STORAGE};
+
+    private final Handler mUiHandler = new Handler(msg -> {
         if (msg.what == MSG_SWITCH_FRAG) {
             String fragName = (String) msg.obj;
             if (FragDefines.PAYMENT_INFO.equals(fragName)) {
@@ -62,34 +67,44 @@ public class VendingActivity extends AppCompatActivity implements IFragSwitcher 
         return true;
     });
 
-    private void start() {
-        VendingClient.getInstance(this).setHandler(mSwitchFragHandler);
-        DoorController.getInstance(this).setHandler(mSwitchFragHandler);
-        switchFragTo(getIntent().getStringExtra(TARGET_FRAG));
-    }
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
         setContentView(R.layout.activity_vending);
+        VendingClient.getInstance(this).setHandler(mUiHandler);
+        DoorController.getInstance(this).setHandler(mUiHandler);
 
-        if (checkSelfPermission(Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
-            LogUtil.i("[VendingActivity] no camera permission");
-            mHasPermission = false;
-            requestPermissions(new String[]{Manifest.permission.CAMERA}, REQUEST_CAMERA_PERMISSION);
+        if (!hasRequiredPermissions()) {
+            mAllPermissionsGranted = false;
+            requestPermissions(PERMISSIONS, REQUEST_PERMISSIONS_CODE);
         }
+    }
+
+    private boolean hasRequiredPermissions() {
+        for (String permission : PERMISSIONS) {
+            if (checkSelfPermission(permission) != PackageManager.PERMISSION_GRANTED) {
+                return false;
+            }
+        }
+        return true;
     }
 
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions,
                                            @NonNull int[] grantResults) {
-        if (requestCode == REQUEST_CAMERA_PERMISSION) {
-            if (grantResults.length == 1 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                LogUtil.i("[VendingActivity] camera permission granted");
-                mHasPermission = true;
-                start();
+        if (requestCode == REQUEST_PERMISSIONS_CODE) {
+            mAllPermissionsGranted = true;
+            for (int result : grantResults) {
+                if (result != PackageManager.PERMISSION_GRANTED) {
+                    mAllPermissionsGranted = false;
+                    break;
+                }
+            }
+            if (mAllPermissionsGranted) {
+                LogUtil.i("[VendingActivity] all permissions granted");
+                switchFragTo(getIntent().getStringExtra(TARGET_FRAG));
             } else {
                 finish();
             }
@@ -99,8 +114,8 @@ public class VendingActivity extends AppCompatActivity implements IFragSwitcher 
     @Override
     protected void onStart() {
         super.onStart();
-        if (mHasPermission) {
-            start();
+        if (mAllPermissionsGranted) {
+            switchFragTo(getIntent().getStringExtra(TARGET_FRAG));
         }
     }
 
