@@ -6,14 +6,31 @@ android {
         applicationId "com.cloudminds.vending"
         minSdkVersion 23
         targetSdkVersion 28
-        versionCode 102
-        versionName "1.0.2"
+        versionCode 1
+        versionName "VENDINGAPP_RCUX_A_V1.0.0.0_RC_" + defaultConfig.versionCode + "_" + getDate()
         ndk { abiFilters 'armeabi-v7a' }
     }
+    signingConfigs {
+        signConfig {
+            keyAlias 'cmti'
+            keyPassword '123456'
+            storeFile file('signedKey.jks')
+            storePassword '123456'
+        }
+    }
     buildTypes {
+        debug {
+            versionNameSuffix "_DEBUG"
+            minifyEnabled false
+            multiDexEnabled true
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            signingConfig signingConfigs.signConfig
+        }
         release {
             minifyEnabled false
+            multiDexEnabled true
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+            signingConfig signingConfigs.signConfig
         }
     }
     repositories {
@@ -27,8 +44,7 @@ android {
     }
     android.applicationVariants.all { variant ->
         variant.outputs.all {
-            def datetime = new Date().format('yyyyMMddHHmm')
-            outputFileName = "VendingApp_${versionName}_${datetime}_${buildType.name}.apk"
+            outputFileName = "${defaultConfig.versionName}_${buildType.name}.apk"
         }
     }
 }
@@ -43,4 +59,8 @@ dependencies {
     implementation 'com.squareup.okhttp3:logging-interceptor:3.10.0'
     implementation 'com.squareup.retrofit2:retrofit:2.6.2'
     implementation 'com.squareup.retrofit2:converter-gson:2.6.2'
+}
+
+def static getDate() {
+    return new Date().format('yyyyMMddHHmm')
 }
