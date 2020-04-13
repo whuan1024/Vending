@@ -1,0 +1,40 @@
+ManifestFileVersion: 0
+CRC: 804558166
+Hashes:
+  AssetFileHash:
+    serializedVersion: 2
+    Hash: 7293f283dd9e8b3812ba5b4610b179ac
+  TypeTreeHash:
+    serializedVersion: 2
+    Hash: 9d7e620372ddb74bbb7cd00b3de4761f
+HashAppended: 0
+ClassTypes:
+- Class: 1
+  Script: {instanceID: 0}
+- Class: 4
+  Script: {instanceID: 0}
+- Class: 21
+  Script: {instanceID: 0}
+- Class: 23
+  Script: {instanceID: 0}
+- Class: 28
+  Script: {instanceID: 0}
+- Class: 33
+  Script: {instanceID: 0}
+- Class: 43
+  Script: {instanceID: 0}
+- Class: 48
+  Script: {instanceID: 0}
+- Class: 90
+  Script: {instanceID: 0}
+- Class: 95
+  Script: {instanceID: 0}
+- Class: 114
+  Script: {fileID: 11500000, guid: 3524704b37ed3404baaa1ca64b1c33e0, type: 3}
+- Class: 115
+  Script: {instanceID: 0}
+- Class: 137
+  Script: {instanceID: 0}
+Assets:
+- Assets/ArtResources/Editor/Avatars/TrainGirl/TrainGirl.prefab
+Dependencies: []

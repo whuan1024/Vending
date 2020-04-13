@@ -1,0 +1,67 @@
+ManifestFileVersion: 0
+CRC: 1839538101
+Hashes:
+  AssetFileHash:
+    serializedVersion: 2
+    Hash: 6e50c6ecfe4e9cf720050c0f1831c1cb
+  TypeTreeHash:
+    serializedVersion: 2
+    Hash: f1ea44e8727b82328e2838dcaec4d73f
+HashAppended: 0
+ClassTypes:
+- Class: 1
+  Script: {instanceID: 0}
+- Class: 4
+  Script: {instanceID: 0}
+- Class: 21
+  Script: {instanceID: 0}
+- Class: 23
+  Script: {instanceID: 0}
+- Class: 28
+  Script: {instanceID: 0}
+- Class: 33
+  Script: {instanceID: 0}
+- Class: 43
+  Script: {instanceID: 0}
+- Class: 48
+  Script: {instanceID: 0}
+- Class: 74
+  Script: {instanceID: 0}
+- Class: 90
+  Script: {instanceID: 0}
+- Class: 91
+  Script: {instanceID: 0}
+- Class: 95
+  Script: {instanceID: 0}
+- Class: 114
+  Script: {fileID: 11500000, guid: 77408510723ad6a42af03d73ed1f5c8b, type: 3}
+- Class: 114
+  Script: {fileID: 11500000, guid: e48bf75516c7b7a43bd2485ef348a5d4, type: 3}
+- Class: 114
+  Script: {fileID: 11500000, guid: 7de12ee713fe98d48b417492c954f349, type: 3}
+- Class: 114
+  Script: {fileID: 11500000, guid: 089022a81a14fc84b961ef54fb2ba9b3, type: 3}
+- Class: 114
+  Script: {fileID: 11500000, guid: 337b5949f675a584dbeb3b88d18e0fcc, type: 3}
+- Class: 114
+  Script: {fileID: 11500000, guid: 3524704b37ed3404baaa1ca64b1c33e0, type: 3}
+- Class: 114
+  Script: {fileID: 11500000, guid: 1ad7c52f9fc525740be1a6e888911fba, type: 3}
+- Class: 115
+  Script: {instanceID: 0}
+- Class: 137
+  Script: {instanceID: 0}
+Assets:
+- Assets/ArtResources/Editor/Avatars/NurseGirl/NurseGirl.prefab
+- Assets/ArtResources/Editor/Avatars/TrainGirl/TrainGirl.prefab
+- Assets/ArtResources/Editor/Avatars/HongKun_US/HongKun_US.prefab
+- Assets/ArtResources/Editor/Avatars/BusGirl/BusGirl.prefab
+- Assets/ArtResources/Editor/Avatars/AsiaGirl/AsiaGirl.prefab
+- Assets/ArtResources/Editor/Avatars/PoliceGirl/PoliceGirl.prefab
+- Assets/ArtResources/Editor/Avatars/ChineseGirl/ChineseGirl.prefab
+- Assets/ArtResources/Editor/Avatars/EuropeanGirl/EuropeanGirl.prefab
+- Assets/ArtResources/Editor/Avatars/ChinaMobileGirl/ChinaMobileGirl.prefab
+- Assets/ArtResources/Editor/Avatars/SalesGirl/SalesGirl.prefab
+- Assets/ArtResources/Editor/Avatars/HongKun_CN/HongKun_CN.prefab
+- Assets/ArtResources/Editor/Avatars/AmericaGirl/AmericaGirl.prefab
+Dependencies: []
