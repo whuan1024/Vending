@@ -62,6 +62,33 @@ public class FaceDetectFragment extends Fragment implements FaceDetect.InitCallB
 
         FaceDetect.init(getContext(), this);
         mFaceDetect = new FaceDetect();
+
+        //simulate dialog
+        view.findViewById(R.id.btn_detect_fail).setOnClickListener(v -> {
+            if (mEmptyFaceDialog == null) {
+                mEmptyFaceDialog = new EmptyFaceDialog();
+            }
+            if (!mEmptyFaceDialog.isAdded() && !mEmptyFaceDialog.isRemoving() && !mEmptyFaceDialog.isVisible()) {
+                mEmptyFaceDialog.show(getFragmentManager(), mEmptyFaceDialog.getClass().getSimpleName());
+            }
+        });
+        view.findViewById(R.id.btn_new_user).setOnClickListener(v -> {
+            if (mStrangerFaceDialog == null) {
+                mStrangerFaceDialog = new StrangerFaceDialog();
+            }
+            if (!mStrangerFaceDialog.isAdded() && !mStrangerFaceDialog.isRemoving() && !mStrangerFaceDialog.isVisible()) {
+                mStrangerFaceDialog.show(getFragmentManager(), mStrangerFaceDialog.getClass().getSimpleName());
+            }
+        });
+        view.findViewById(R.id.btn_user_check).setOnClickListener(v -> {
+            if (mUserCheckDialog == null) {
+                mUserCheckDialog = new UserCheckDialog();
+            }
+            if (!mUserCheckDialog.isAdded() && !mUserCheckDialog.isRemoving() && !mUserCheckDialog.isVisible()) {
+                mUserCheckDialog.show(getFragmentManager(), mUserCheckDialog.getClass().getSimpleName());
+            }
+        });
+        //simulate end
     }
 
     @Override

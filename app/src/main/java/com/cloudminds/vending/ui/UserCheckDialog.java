@@ -1,7 +1,5 @@
 package com.cloudminds.vending.ui;
 
-import android.graphics.Color;
-import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.view.Gravity;
@@ -64,7 +62,7 @@ public class UserCheckDialog extends DialogFragment {
             ((TextView) view.findViewById(R.id.tip)).setText(tip);
         }
 
-        int size = getResources().getDimensionPixelOffset(R.dimen.dialog_qr_code_size);
+        int size = getResources().getDimensionPixelOffset(R.dimen.qr_code_size_small);
         String content = DeviceUnityCodeUtil.getQrCodeContent(getContext());
         ((ImageView) view.findViewById(R.id.img_qr_code)).setImageBitmap(QREncodeUtil.createQRCode(content, size, size, null));
         view.findViewById(R.id.close).setOnClickListener(v -> dismiss());
@@ -91,11 +89,11 @@ public class UserCheckDialog extends DialogFragment {
         super.onStart();
         Window window = getDialog().getWindow();
         WindowManager.LayoutParams layoutParams = window.getAttributes();
-        layoutParams.width = WindowManager.LayoutParams.MATCH_PARENT;
-        layoutParams.height = WindowManager.LayoutParams.WRAP_CONTENT;
-        layoutParams.gravity = Gravity.CENTER;
+        layoutParams.width = getResources().getDimensionPixelOffset(R.dimen.dialog_width);
+        layoutParams.height = getResources().getDimensionPixelOffset(R.dimen.dialog_height);
+        layoutParams.gravity = Gravity.CENTER_HORIZONTAL;
+        layoutParams.verticalMargin = 0.28f;
         window.setAttributes(layoutParams);
-        window.setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT)); //背景要设为透明，否则白色小叉号显示不出来
     }
 
     @Override

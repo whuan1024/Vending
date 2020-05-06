@@ -1,146 +1,132 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="@drawable/bg_blue"
-    tools:context="com.cloudminds.vending.ui.PaymentInfoFragment">
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="@dimen/vending_frame_width"
+    android:layout_height="@dimen/vending_frame_height"
+    android:layout_gravity="center_horizontal"
+    android:background="@drawable/bg_white"
+    android:gravity="center_horizontal"
+    android:orientation="vertical"
+    android:paddingStart="200dp"
+    android:paddingEnd="200dp">
 
-    <LinearLayout
+    <TextView
+        android:id="@+id/payment_result"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="234dp"
-        android:background="@drawable/bg_payment_info"
-        android:gravity="center_horizontal"
-        android:orientation="vertical"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
+        android:layout_marginTop="80dp"
+        android:text="@string/pay_success"
+        android:textColor="@color/main_text_color"
+        android:textSize="52sp"/>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="60dp">
 
         <TextView
-            android:id="@+id/payment_result"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="50dp"
-            android:drawableTop="@drawable/ic_payment_success"
-            android:drawablePadding="40dp"
-            android:text="@string/pay_success"
+            android:layout_alignParentStart="true"
+            android:text="@string/total"
             android:textColor="@color/main_text_color"
-            android:textSize="60sp"/>
-
-        <View
-            android:layout_width="800dp"
-            android:layout_height="2dp"
-            android:layout_marginTop="50dp"
-            android:background="@drawable/dashed_line"
-            android:layerType="software"/>
-
-        <RelativeLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="60dp"
-            android:paddingStart="80dp"
-            android:paddingEnd="80dp">
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentStart="true"
-                android:text="@string/total"
-                android:textColor="@color/main_text_color"
-                android:textSize="40sp"/>
-
-            <TextView
-                android:id="@+id/total_amount"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentEnd="true"
-                android:textColor="@color/main_text_color"
-                android:textSize="40sp"/>
-        </RelativeLayout>
-
-        <RelativeLayout
-            android:id="@+id/coupon_info"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="40dp"
-            android:paddingStart="80dp"
-            android:paddingEnd="80dp">
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentStart="true"
-                android:text="@string/coupon"
-                android:textColor="@color/coupon_color"
-                android:textSize="40sp"/>
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentEnd="true"
-                android:text="-¥2.50"
-                android:textColor="@color/coupon_color"
-                android:textSize="40sp"/>
-        </RelativeLayout>
-
-        <View
-            android:layout_width="800dp"
-            android:layout_height="2dp"
-            android:layout_marginTop="60dp"
-            android:background="@drawable/dashed_line"
-            android:layerType="software"/>
-
-        <RelativeLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="40dp"
-            android:paddingStart="80dp"
-            android:paddingEnd="80dp">
-
-            <TextView
-                android:id="@+id/payment_bill"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentStart="true"
-                android:textColor="@color/main_text_color"
-                android:textSize="60sp"/>
-
-            <TextView
-                android:id="@+id/total_cost"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentEnd="true"
-                android:textColor="@color/main_text_color"
-                android:textSize="60sp"/>
-        </RelativeLayout>
-
-        <View
-            android:layout_width="800dp"
-            android:layout_height="2dp"
-            android:layout_marginTop="40dp"
-            android:background="@drawable/dashed_line"
-            android:layerType="software"/>
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="150dp"
-            android:text="@string/order_details_hint"
-            android:textColor="@color/sub_text_color"
             android:textSize="32sp"/>
 
-        <Button
-            android:id="@+id/btn_ok"
+        <TextView
+            android:id="@+id/total_amount"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="60dp"
-            android:background="@drawable/bg_button"
-            android:textAllCaps="false"
-            android:textColor="@android:color/white"
-            android:textSize="40sp"/>
-    </LinearLayout>
+            android:layout_alignParentEnd="true"
+            android:textColor="@color/main_text_color"
+            android:textSize="32sp"/>
+    </RelativeLayout>
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+    <RelativeLayout
+        android:id="@+id/coupon_info"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="30dp">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentStart="true"
+            android:text="@string/coupon"
+            android:textColor="@color/coupon_color"
+            android:textSize="32sp"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:text="-¥2.50"
+            android:textColor="@color/coupon_color"
+            android:textSize="32sp"/>
+    </RelativeLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="2dp"
+        android:layout_marginTop="40dp"
+        android:background="@drawable/dashed_line"
+        android:layerType="software"/>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="40dp">
+
+        <TextView
+            android:id="@+id/payment_bill"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentStart="true"
+            android:textColor="@color/main_text_color"
+            android:textSize="52sp"/>
+
+        <TextView
+            android:id="@+id/total_cost"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:textColor="@color/main_text_color"
+            android:textSize="52sp"/>
+    </RelativeLayout>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="100dp"
+        android:text="@string/order_details_hint"
+        android:textColor="@color/sub_text_color"
+        android:textSize="28sp"/>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="40dp">
+
+        <Button
+            android:id="@+id/btn_continue"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentStart="true"
+            android:layout_marginStart="50dp"
+            android:background="@drawable/bg_button_white"
+            android:text="@string/continue_shopping"
+            android:textColor="@color/blue_text"
+            android:textSize="28sp"/>
+
+        <Button
+            android:id="@+id/btn_back"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:layout_marginEnd="50dp"
+            android:background="@drawable/bg_button_blue"
+            android:text="@string/return_homepage"
+            android:textColor="@android:color/white"
+            android:textSize="28sp"/>
+    </RelativeLayout>
+
+</LinearLayout>
+

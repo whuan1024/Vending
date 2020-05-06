@@ -10,7 +10,7 @@ public class BootBroadcastReceiver extends BroadcastReceiver {
     @Override
     public void onReceive(Context context, Intent intent) {
         if (intent.getAction().equals(ACTION)) {
-            Intent new_intent = new Intent(context, UnityPlayerActivity.class);  // 要启动的Activity
+            Intent new_intent = new Intent(context, MainActivity.class);  // 要启动的Activity
             //1.如果自启动APP，参数为需要自动启动的应用包名
            // Intent new_intent = getPackageManager().getLaunchIntentForPackage(packageName);
             //下面这句话必须加上才能开机自动运行app的界面

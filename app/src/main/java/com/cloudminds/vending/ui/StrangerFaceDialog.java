@@ -1,8 +1,6 @@
 package com.cloudminds.vending.ui;
 
 import android.content.Context;
-import android.graphics.Color;
-import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.view.Gravity;
@@ -49,7 +47,7 @@ public class StrangerFaceDialog extends DialogFragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         view.findViewById(R.id.close).setOnClickListener(v -> dismiss());
-        view.findViewById(R.id.btn_open).setOnClickListener(v -> {
+        view.findViewById(R.id.open_now).setOnClickListener(v -> {
             dismiss();
             if (mFragSwitcher != null) {
                 mFragSwitcher.switchFragTo(IFragSwitcher.FragDefines.OPEN_SERVICE);
@@ -78,11 +76,11 @@ public class StrangerFaceDialog extends DialogFragment {
         super.onStart();
         Window window = getDialog().getWindow();
         WindowManager.LayoutParams layoutParams = window.getAttributes();
-        layoutParams.width = WindowManager.LayoutParams.MATCH_PARENT;
-        layoutParams.height = WindowManager.LayoutParams.WRAP_CONTENT;
-        layoutParams.gravity = Gravity.CENTER;
+        layoutParams.width = getResources().getDimensionPixelOffset(R.dimen.dialog_width);
+        layoutParams.height = getResources().getDimensionPixelOffset(R.dimen.dialog_height);
+        layoutParams.gravity = Gravity.CENTER_HORIZONTAL;
+        layoutParams.verticalMargin = 0.28f;
         window.setAttributes(layoutParams);
-        window.setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT)); //背景要设为透明，否则白色小叉号显示不出来
     }
 
     @Override

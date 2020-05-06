@@ -8,18 +8,6 @@
         <item name="colorAccent">@color/colorAccent</item>
     </style>
 
-    <style name="FullScreenTheme" parent="Theme.AppCompat.Light">
-        <item name="actionBarStyle">@style/FullScreenActionBarStyle</item>
-        <item name="windowNoTitle">true</item>
-        <item name="android:windowActionBarOverlay">true</item>
-    </style>
-
-    <style name="FullScreenActionBarStyle" parent="@style/Widget.AppCompat.Light.ActionBar.Solid">
-        <item name="background">@android:color/transparent</item>
-        <!--<item name="backgroundStacked">@android:color/holo_green_dark</item>-->
-        <!--<item name="backgroundSplit">@android:color/holo_red_dark</item>-->
-    </style>
-
     <style name="OutsideCantCancelDialog" parent="Theme.AppCompat.Light.Dialog">
         <item name="android:windowCloseOnTouchOutside">false</item>
         <item name="android:windowBackground">@drawable/bg_card</item>

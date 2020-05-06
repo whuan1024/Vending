@@ -45,18 +45,6 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity
-            android:name="com.cloudminds.vending.ui.MainActivity"
-            android:screenOrientation="portrait">
-        </activity>
-
-        <activity
-            android:name="com.cloudminds.vending.ui.VendingActivity"
-            android:configChanges="orientation|keyboardHidden|screenSize"
-            android:exported="true"
-            android:screenOrientation="portrait"
-            android:theme="@style/FullScreenTheme">
-        </activity>
 
         <service
             android:name="com.cloudminds.vending.task.TemperatureReport"
@@ -78,11 +66,10 @@
 
         <!-- import unity -->
         <activity
-            android:name="com.cloudminds.VirtualRobot.UnityPlayerActivity"
+            android:name="com.cloudminds.VirtualRobot.MainActivity"
             android:configChanges="mcc|mnc|locale|touchscreen|keyboard|keyboardHidden|navigation|orientation|screenLayout|uiMode|screenSize|smallestScreenSize|fontScale|layoutDirection|density"
             android:hardwareAccelerated="false"
-            android:launchMode="singleTask"
-            android:screenOrientation="landscape">
+            android:launchMode="singleTask">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <action android:name="android.intent.action.VIEW" />

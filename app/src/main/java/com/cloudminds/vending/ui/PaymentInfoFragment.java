@@ -6,7 +6,6 @@ import android.os.CountDownTimer;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.TextView;
 
 import com.cloudminds.vending.R;
@@ -21,7 +20,6 @@ public class PaymentInfoFragment extends Fragment {
     static final String TOTAL_AMOUNT = "total_amount";
     static final String TOTAL_NUMBER = "total_number";
 
-    private Button mButton;
     private CountDownTimer mTimer;
 
     @Override
@@ -40,12 +38,16 @@ public class PaymentInfoFragment extends Fragment {
             amount = String.format("¥%.2f", getArguments().getInt(TOTAL_AMOUNT) / 100.0);
             number = getArguments().getInt(TOTAL_NUMBER);
         }
-        view.findViewById(R.id.coupon_info).setVisibility(View.INVISIBLE);
-        ((TextView) view.findViewById(R.id.payment_bill)).setText(String.format(getString(R.string.actual_payment), number));
-        ((TextView) view.findViewById(R.id.total_cost)).setText(amount);
-        ((TextView) view.findViewById(R.id.total_amount)).setText(amount);
-        mButton = view.findViewById(R.id.btn_ok);
-        mButton.setOnClickListener(v -> {
+        view.findViewById(R.id.coupon_info).setVisibility(View.GONE);
+        ((TextView) view.findViewById(R.id.payment_bill)).setText(String.format(getString(R.string.actual_payment), 1));
+        ((TextView) view.findViewById(R.id.total_cost)).setText("8.30");
+        ((TextView) view.findViewById(R.id.total_amount)).setText("10.80");
+        view.findViewById(R.id.btn_continue).setOnClickListener(v -> {
+            if (getActivity() != null) {
+                getActivity().finish();
+            }
+        });
+        view.findViewById(R.id.btn_back).setOnClickListener(v -> {
             if (getActivity() != null) {
                 getActivity().finish();
             }
@@ -54,16 +56,13 @@ public class PaymentInfoFragment extends Fragment {
         mTimer = new CountDownTimer(1000 * 11, 1000) {
             @Override
             public void onTick(long millisUntilFinished) {
-                if (isAdded()) {
-                    mButton.setText(String.format(getString(R.string.ok_countdown),
-                            millisUntilFinished / 1000));
-                }
+                // TODO: nothing
             }
 
             @Override
             public void onFinish() {
-                LogUtil.i("[PaymentInfoFragment] onFinish: return in 10 seconds");
-                if (getActivity() != null) {
+                if (getActivity() != null && isVisible()) {
+                    LogUtil.i("[PaymentInfoFragment] onFinish: return in 10 seconds");
                     getActivity().finish();
                 }
             }

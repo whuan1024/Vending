@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="@dimen/vending_frame_width"
+    android:layout_height="@dimen/vending_frame_height"
+    android:layout_gravity="center_horizontal"
     android:background="@drawable/bg_white">
 
     <ImageView
@@ -10,7 +10,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="376dp"
+        android:layout_marginTop="150dp"
         android:background="@drawable/ic_lock_opened"
         android:visibility="gone"/>
 
@@ -19,7 +19,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="730dp"
+        android:layout_marginTop="230dp"
         android:orientation="horizontal"
         android:visibility="gone">
 
@@ -48,9 +48,9 @@
         android:layout_height="wrap_content"
         android:layout_above="@id/sub_title"
         android:layout_centerHorizontal="true"
-        android:layout_marginBottom="60dp"
+        android:layout_marginBottom="30dp"
         android:textColor="@color/main_text_color"
-        android:textSize="60sp"/>
+        android:textSize="52sp"/>
 
     <TextView
         android:id="@+id/sub_title"
@@ -58,7 +58,8 @@
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true"
-        android:layout_marginBottom="540dp"
-        android:textColor="@color/main_text_color"
-        android:textSize="46sp"/>
+        android:layout_marginBottom="200dp"
+        android:textColor="@color/sub_text_color"
+        android:textSize="36sp"/>
+
 </RelativeLayout>

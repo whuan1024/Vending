@@ -1,170 +1,78 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:padding="60dp"
-    tools:context="com.cloudminds.vending.ui.MainActivity">
+    android:layout_height="match_parent">
+
+    <FrameLayout
+        android:id="@+id/avatar"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"/>
 
     <LinearLayout
-        android:id="@+id/ll_left"
-        android:layout_width="0dp"
-        android:layout_height="match_parent"
-        android:gravity="center_horizontal"
-        android:orientation="vertical"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toStartOf="@+id/ll_middle"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
+        android:id="@+id/words"
+        android:layout_width="match_parent"
+        android:layout_height="70dp"
+        android:layout_above="@+id/vending_container"
+        android:background="@android:color/transparent"
+        android:orientation="horizontal">
+
+        <Button
+            android:id="@+id/commodity_list"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="30dp"
+            android:text="商品列表"/>
+
+        <Button
+            android:id="@+id/commodity_detail"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="10dp"
+            android:text="商品详情"/>
 
         <Button
             android:id="@+id/detect_face"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginStart="10dp"
             android:text="刷脸登录"/>
-
-        <Button
-            android:id="@+id/scan_code"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="10dp"
-            android:text="扫码购物"/>
 
         <Button
             android:id="@+id/open_service"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="10dp"
+            android:layout_marginStart="10dp"
             android:text="开通服务"/>
 
         <Button
             android:id="@+id/lock_opened"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="10dp"
+            android:layout_marginStart="10dp"
             android:text="门锁已开"/>
 
         <Button
             android:id="@+id/settle_up"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="10dp"
+            android:layout_marginStart="10dp"
             android:text="正在结算"/>
 
         <Button
             android:id="@+id/payment_info"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="10dp"
+            android:layout_marginStart="10dp"
             android:text="支付信息"/>
     </LinearLayout>
 
-    <LinearLayout
-        android:id="@+id/ll_middle"
-        android:layout_width="0dp"
-        android:layout_height="match_parent"
-        android:gravity="center_horizontal"
-        android:orientation="vertical"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toStartOf="@+id/ll_right"
-        app:layout_constraintStart_toEndOf="@+id/ll_left"
-        app:layout_constraintTop_toTopOf="parent">
+    <FrameLayout
+        android:id="@+id/vending_container"
+        android:layout_width="match_parent"
+        android:layout_height="934dp"
+        android:layout_alignParentBottom="true"
+        android:background="@color/mask_color"
+        android:visibility="invisible"
+        android:fitsSystemWindows="true"/>
 
-        <Button
-            android:id="@+id/open_lock"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="开锁"/>
-
-        <Button
-            android:id="@+id/lock_state"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="10dp"
-            android:text="锁状态"/>
-
-        <Button
-            android:id="@+id/door_state"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="10dp"
-            android:text="门状态"/>
-
-        <Button
-            android:id="@+id/take_picture"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="10dp"
-            android:text="拍照"/>
-
-        <Button
-            android:id="@+id/start_monitor"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="10dp"
-            android:text="开始监控"/>
-
-        <Button
-            android:id="@+id/stop_monitor"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="10dp"
-            android:text="停止监控"/>
-    </LinearLayout>
-
-    <LinearLayout
-        android:id="@+id/ll_right"
-        android:layout_width="0dp"
-        android:layout_height="match_parent"
-        android:gravity="center_horizontal"
-        android:orientation="vertical"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/ll_middle"
-        app:layout_constraintTop_toTopOf="parent">
-
-        <Button
-            android:id="@+id/send_face"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="发送人脸图片"/>
-
-        <Button
-            android:id="@+id/send_commodity"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="10dp"
-            android:text="发送商品图片"/>
-
-        <Button
-            android:id="@+id/report_close_door"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="10dp"
-            android:text="上报关门消息"/>
-
-        <Button
-            android:id="@+id/report_exception"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="10dp"
-            android:text="上报锁柜消息"/>
-
-        <Button
-            android:id="@+id/upload_monitor"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="10dp"
-            android:text="上传监控文件"/>
-
-        <Button
-            android:id="@+id/zip"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="10dp"
-            android:text="压缩文件"/>
-    </LinearLayout>
-
-</androidx.constraintlayout.widget.ConstraintLayout>
+</RelativeLayout>

@@ -1,6 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <dimen name="dialog_width">717dp</dimen>
-    <dimen name="qr_code_size">467dp</dimen>
-    <dimen name="dialog_qr_code_size">450dp</dimen>
+    <dimen name="dialog_height">557dp</dimen>
+    <dimen name="qr_code_size_big">450dp</dimen>
+    <dimen name="qr_code_size_small">280dp</dimen>
+    <dimen name="vending_frame_width">1020dp</dimen>
+    <dimen name="vending_frame_height">808dp</dimen>
+    <dimen name="commodity_item_width">296dp</dimen>
+    <dimen name="commodity_item_height">384dp</dimen>
 </resources>

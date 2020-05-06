@@ -58,8 +58,8 @@ public class EmptyFaceDialog extends DialogFragment {
 
             @Override
             public void onFinish() {
-                LogUtil.i("[EmptyFaceDialog] onFinish: return in 5 seconds");
                 if (getActivity() != null && isVisible()) {
+                    LogUtil.i("[EmptyFaceDialog] onFinish: return in 5 seconds");
                     getActivity().finish();
                 }
             }
@@ -73,8 +73,9 @@ public class EmptyFaceDialog extends DialogFragment {
         Window window = getDialog().getWindow();
         WindowManager.LayoutParams layoutParams = window.getAttributes();
         layoutParams.width = getResources().getDimensionPixelOffset(R.dimen.dialog_width);
-        layoutParams.height = WindowManager.LayoutParams.WRAP_CONTENT;
-        layoutParams.gravity = Gravity.CENTER;
+        layoutParams.height = getResources().getDimensionPixelOffset(R.dimen.dialog_height);
+        layoutParams.gravity = Gravity.CENTER_HORIZONTAL;
+        layoutParams.verticalMargin = 0.28f;
         window.setAttributes(layoutParams);
     }
 

@@ -10,15 +10,8 @@
     <string name="face_login">开通刷脸服务</string>
     <string name="face_login_summary">获得更便捷的登录体验</string>
     <string name="open_now">马上开启</string>
-    <string name="open_service">开通服务</string>
-    <string name="open_success">开启成功</string>
     <string name="slogan_first">打开手机扫一扫</string>
     <string name="slogan_second">开启刷脸购物新体验</string>
-    <string name="slogan_single">精致生活新体验</string>
-    <string name="scan_code">扫码购物</string>
-    <string name="open_door">扫码/刷脸开门</string>
-    <string name="purchase">选购商品</string>
-    <string name="auto_settle">关门自动结算</string>
     <string name="lock_opened">门锁已开</string>
     <string name="lock_opened_summary">请开门取出货品，关门即可结账</string>
     <string name="settling_accounts">正在结算</string>
@@ -28,7 +21,10 @@
     <string name="coupon">优惠劵</string>
     <string name="actual_payment">已付(共%d件)</string>
     <string name="order_details_hint">【订单详情】可前往我的-我的订单查看</string>
-    <string name="ok_countdown">好的 (%ds)</string>
+    <string name="continue_shopping">继续购物</string>
+    <string name="return_homepage">返回主页</string>
+    <string name="select_payment_mode">请选择扫码支付或刷脸支付</string>
+    <string name="face_scan_payment">刷脸支付</string>
     <string name="has_unpaid_order">亲，检测到您的%s账号存在一笔未支付订单，请扫码完成支付后再进行消费。</string>
     <string name="no_quick_payment">亲，检测到您的%s账号未开通免密支付，请开通免密支付后再进行消费。</string>
 </resources>

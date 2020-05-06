@@ -7,20 +7,38 @@ import android.content.pm.PackageManager;
 import android.content.res.Configuration;
 import android.media.AudioManager;
 import android.os.Bundle;
-import androidx.appcompat.app.AppCompatActivity;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
+import android.view.View;
 import android.view.Window;
+import android.widget.FrameLayout;
 
+import com.cloudminds.vending.R;
+import com.cloudminds.vending.ui.CommodityDetailFragment;
+import com.cloudminds.vending.ui.CommodityListFragment;
+import com.cloudminds.vending.ui.FaceDetectFragment;
+import com.cloudminds.vending.ui.IFragSwitcher;
+import com.cloudminds.vending.ui.LockOpenedFragment;
+import com.cloudminds.vending.ui.OpenServiceFragment;
+import com.cloudminds.vending.ui.PaymentInfoFragment;
+import com.cloudminds.vending.ui.SettleUpFragment;
+import com.cloudminds.vending.utils.LogUtil;
 import com.unity3d.player.UnityPlayer;
 
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
 
-public class UnityPlayerActivity extends AppCompatActivity
+
+public class MainActivity extends AppCompatActivity implements IFragSwitcher
 {
     protected UnityPlayer mUnityPlayer; // don't change the name of this variable; referenced from native code
     final String TAG="---UnityCallback---" ;
     private AudioManager audioManager;
+
+    private FrameLayout mVendingContainer;
 
 
     Mp3Player mp3Player;
@@ -71,7 +89,13 @@ public class UnityPlayerActivity extends AppCompatActivity
 
       //  CleanCachingTools. cleanApplicationData(this);
         mUnityPlayer = new UnityPlayer(this);
-        setContentView(mUnityPlayer);
+
+        //setContentView(mUnityPlayer);
+        setContentView(R.layout.activity_main);
+        ((FrameLayout) findViewById(R.id.avatar)).addView(mUnityPlayer);
+        mVendingContainer = findViewById(R.id.vending_container);
+        debugUI();
+
         mUnityPlayer.requestFocus();
         SetMusicVolume();
         checkPermission();
@@ -87,6 +111,130 @@ public class UnityPlayerActivity extends AppCompatActivity
         //  使用这一句，设置背景， 参数 "salesgirlbackground" : 高斌提供的背景，  "starspace": 地球星空背景。 其他：  纯灰色背景
         UnityPlayer.UnitySendMessage("Controller","SetBackground","empty");
 
+    }
+
+    private void debugUI() {
+        findViewById(R.id.commodity_list).setOnClickListener(v -> {
+            switchFragTo(FragDefines.COMMODITY_LIST);
+        });
+        findViewById(R.id.commodity_detail).setOnClickListener(v -> {
+            switchFragTo(FragDefines.COMMODITY_DETAIL);
+        });
+        findViewById(R.id.detect_face).setOnClickListener(v -> {
+            switchFragTo(FragDefines.FACE_DETECT);
+        });
+        findViewById(R.id.open_service).setOnClickListener(v -> {
+            switchFragTo(FragDefines.OPEN_SERVICE);
+        });
+        findViewById(R.id.lock_opened).setOnClickListener(v -> {
+            switchFragTo(FragDefines.LOCK_OPENED);
+        });
+        findViewById(R.id.settle_up).setOnClickListener(v -> {
+            switchFragTo(FragDefines.SETTLE_UP);
+        });
+        findViewById(R.id.payment_info).setOnClickListener(v -> {
+            switchFragTo(FragDefines.PAYMENT_INFO);
+        });
+    }
+
+    private Fragment mCurrentFragment;
+
+    private CommodityListFragment mCommodityListFragment;
+    private CommodityDetailFragment mCommodityDetailFragment;
+    private FaceDetectFragment mFaceDetectFragment;
+    private OpenServiceFragment mOpenServiceFragment;
+    private LockOpenedFragment mLockOpenedFragment;
+    private SettleUpFragment mSettleUpFragment;
+    private PaymentInfoFragment mPaymentInfoFragment;
+
+    @Override
+    public void onBackPressed() {
+        int fragStackCount = getSupportFragmentManager().getBackStackEntryCount();
+        LogUtil.i("[MainActivity] onBackPressed--fragStackCount: " + fragStackCount);
+        if (fragStackCount <= 1) {
+            //finish();
+        } else {
+            LogUtil.i("[MainActivity] onBackPressed--before: " + getSupportFragmentManager().getFragments());
+            super.onBackPressed();//弹栈
+            LogUtil.i("[MainActivity] onBackPressed--after: " + getSupportFragmentManager().getFragments());
+            mCurrentFragment = getSupportFragmentManager().getFragments().get(0);
+        }
+    }
+
+    @Override
+    public void switchFragTo(@FragDefines String fragName) {
+        LogUtil.i("[MainActivity] switchFragTo: " + fragName);
+        if (fragName == null) return;
+
+        Fragment targetFragment = null;
+        switch (fragName) {
+            case FragDefines.COMMODITY_LIST:
+                if (mCommodityListFragment == null) {
+                    mCommodityListFragment = new CommodityListFragment();
+                }
+                targetFragment = mCommodityListFragment;
+                break;
+            case FragDefines.COMMODITY_DETAIL:
+                if (mCommodityDetailFragment == null) {
+                    mCommodityDetailFragment = new CommodityDetailFragment();
+                }
+                targetFragment = mCommodityDetailFragment;
+                break;
+            case FragDefines.FACE_DETECT:
+                if (mFaceDetectFragment == null) {
+                    mFaceDetectFragment = new FaceDetectFragment();
+                }
+                targetFragment = mFaceDetectFragment;
+                break;
+            case FragDefines.OPEN_SERVICE:
+                if (mOpenServiceFragment == null) {
+                    mOpenServiceFragment = new OpenServiceFragment();
+                }
+                targetFragment = mOpenServiceFragment;
+                break;
+            case FragDefines.LOCK_OPENED:
+                if (mLockOpenedFragment == null) {
+                    mLockOpenedFragment = new LockOpenedFragment();
+                }
+                targetFragment = mLockOpenedFragment;
+                break;
+            case FragDefines.SETTLE_UP:
+                if (mSettleUpFragment == null) {
+                    mSettleUpFragment = new SettleUpFragment();
+                }
+                targetFragment = mSettleUpFragment;
+                break;
+            case FragDefines.PAYMENT_INFO:
+                if (mPaymentInfoFragment == null) {
+                    mPaymentInfoFragment = new PaymentInfoFragment();
+                }
+                //mPaymentInfoFragment.setArguments(mBundle);
+                targetFragment = mPaymentInfoFragment;
+                break;
+            default:
+                break;
+        }
+
+        if (targetFragment == null) {
+            LogUtil.e("[MainActivity] targetFragment is not exist!");
+            return;
+        }
+
+        mVendingContainer.setVisibility(View.VISIBLE);
+        FragmentManager fragmentManager = getSupportFragmentManager();
+        FragmentTransaction transaction = fragmentManager.beginTransaction();
+        if (!targetFragment.isAdded()) {
+            if (mCurrentFragment != null) {
+                transaction.hide(mCurrentFragment);
+            }
+            transaction.add(R.id.vending_container, targetFragment, fragName)
+                    .addToBackStack(fragName);//压栈，如果不压栈的话，多个fragment跳转之后，按返回键不会退回到上一个fragment，而是直接退出activity了
+        } else {
+            transaction.hide(mCurrentFragment).show(targetFragment);
+        }
+        mCurrentFragment = targetFragment;
+        transaction.commitAllowingStateLoss();
+        LogUtil.i("[MainActivity] fragments before switch: " + fragmentManager.getFragments());
     }
 
     @Override protected void onNewIntent(Intent intent)
